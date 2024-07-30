@@ -26,7 +26,7 @@ def show(new_path):
 
 
 class OnMyWatch:
-    watchDirectory = Path("towatch")
+    watchDirectory = Path("example_generate")
  
     def __init__(self):
         self.observer = Observer()
