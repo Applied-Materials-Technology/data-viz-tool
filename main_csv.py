@@ -54,13 +54,12 @@ class Handler(FileSystemEventHandler):
         elif event.event_type == 'modified':
             print("Watchdog received modified event - % s." % event.src_path)  
             try:
-                g = pv.read(Path(os.path.join(event.src_path)))
-                print(event.src_path)
-                print(time.time() - start_time)
-                print("FILE ACCEPTED")
-                p.add_mesh(g, opacity=0.5, name='data', cmap='gist_ncar') # add the data from new file to the plotter
-                p.show(interactive=True, interactive_update = True)
-                p.update()
+                f = open(event.src_path, 'r')
+                f.seek(0) # must reset file stream position
+                lines = f.readlines()
+                lastline = lines[-1] # get updated line
+                print(lastline)
+                f.close()
             except:
                 print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
              
