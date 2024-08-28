@@ -57,9 +57,13 @@ class Handler(FileSystemEventHandler):
                 f = open(event.src_path, 'r')
                 f.seek(0) # must reset file stream position
                 lines = f.readlines()
-                lastline = lines[-1] # get updated line
+                lastline = str(lines[-1]) # get updated line
                 print(lastline)
                 f.close()
+                g = pv.read(Path(os.path.join("example_generate", lastline)))
+                p.add_mesh(g, opacity=0.5, name='data', cmap='gist_ncar')
+                p.show(interactive=True, interactive_update = True)
+                p.update()
             except:
                 print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
              
