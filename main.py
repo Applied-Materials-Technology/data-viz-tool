@@ -10,7 +10,7 @@ import os
 import random
 import time
 
-########### requires pycdata ############
+########### full example requires pycdata ############
 
 start_time = time.time() # get base time to start timer
 
