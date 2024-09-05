@@ -10,23 +10,22 @@ p = pv.Plotter(shape=(1,2))
 p.subplot(0, 0)
 #mesh1 = pv.read('data/stc-thermomech-basic-bcbase_out.e')
 #mesh1 = pv.PolyData('data/Image_0006_0.tiff.csv')
-raw_data = pd.read_csv('data/Image_0006_0.tiff.csv', header=0, comment="#",
-                       delim_whitespace=True, names=["X[mm]", "Y[mm]", "Z[mm]"])
+raw_data = pd.read_csv('data/Image_0006_0.tiff.csv', header=0)
 
+data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]']]
+data2.to_csv('newcsvfile.csv', index=False)
 
-loc = raw_data[raw_data.columns[1:4]]
-points_3d = loc.to_numpy()
-#cloud = pv.PolyData(points_3d)
-#surf = cloud.delaunay_2d()
-#surf.plot(show_edges=True)
+print(raw_data['X[mm]'])
 
-#vertices = raw_data.iloc[vidxs][["X[mm]", "Y[mm]", "Z[mm]"]].values
-mesh1 = pv.PolyData(points_3d)
+for i in range(len(raw_data['X[mm]'])):
+    print(i)
+
+#mesh1 = pv.PolyData(raw_data)
 
 #mesh2 = pv.PolyData(points)
-p.add_mesh(mesh1, show_edges=False)
+#p.add_mesh(mesh1, show_edges=False)
 
-p.add_mesh(mesh1, show_edges=False)
+
 
 
 #p.subplot(0,3)
