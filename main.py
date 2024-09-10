@@ -1,14 +1,3 @@
-import time
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-from pathlib import Path
-import matplotlib.pyplot as plt
-from PIL import Image
-import numpy as np
-import pyvista as pv
-import os
-import random
-import time
 
 ########### full example requires pycdata ############
 
