@@ -30,7 +30,7 @@ meshcsv = pv.PolyData(points_csv, force_float = False)
 
 
 #p.add_mesh(meshcsv)
-p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'])
+p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'], log_scale=True)
  
 points = np.array([[6, 1, 1],
               [4, -2, 5],
