@@ -18,14 +18,14 @@ start_time = time.time() # get base time to start timer
 p = pv.Plotter() # create plotter for pyvista
 
 
-class Watcher:
-    watchDirectory = Path("examples") # path where data is being read from
+class WatcherCSV:
+    watchDirectory = Path("data") # path where data is being read from
  
     def __init__(self):
         self.observer = Observer()
  
     def run(self):
-        event_handler = Handler()
+        event_handler = HandlerCSV()
         self.observer.schedule(event_handler, self.watchDirectory, recursive = True)
         self.observer.start()
         try:
@@ -36,9 +36,10 @@ class Watcher:
             print("Observer Stopped")
  
         self.observer.join()
+
+
  
- 
-class Handler(FileSystemEventHandler):
+class HandlerCSV(FileSystemEventHandler):
 
     """
     Decide what to do when certain events are detected in the watchDirectory
@@ -74,9 +75,12 @@ class Handler(FileSystemEventHandler):
                 p.update()
             except:
                 print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
+
+ 
+
              
 
 if __name__ == '__main__':
-    watch = Watcher()
+    watch = WatcherCSV()
     watch.run()
 
