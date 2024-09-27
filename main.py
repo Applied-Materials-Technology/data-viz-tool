@@ -18,7 +18,7 @@ p = pv.Plotter() # create plotter for pyvista
 
 
 class Watcher:
-    watchDirectory = Path("example_generate") # path where data is being read from
+    watchDirectory = Path("examples") # path where data is being read from
  
     def __init__(self):
         self.observer = Observer()

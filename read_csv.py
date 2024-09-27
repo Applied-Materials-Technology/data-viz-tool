@@ -8,6 +8,7 @@ from matplotlib.colors import ListedColormap
 #pv.set_plot_theme(pv.themes.ParaViewTheme())
 points_csv = []
 p = pv.Plotter(shape=(1,2))
+
 #p = pv.Plotter()
 p.subplot(0, 0)
 #mesh1 = pv.read('data/stc-thermomech-basic-bcbase_out.e')
@@ -28,9 +29,15 @@ meshcsv = pv.PolyData(points_csv, force_float = False)
 
 
 
-
+labels = dict(zlabel='Z', xlabel='X', ylabel='Y')
 #p.add_mesh(meshcsv)
-p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'], log_scale=True)
+p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
+p.show_grid(**labels)
+p.add_axes(**labels)
+
+p.add_scalar_bar(
+
+    'Insert label')
  
 points = np.array([[6, 1, 1],
               [4, -2, 5],
@@ -45,4 +52,5 @@ mesh3 = pv.PolyData(points)
 #plt.show()
 
 p.add_mesh(mesh3)
+
 p.show()
