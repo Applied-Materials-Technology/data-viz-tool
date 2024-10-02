@@ -35,6 +35,9 @@ class Watcher:
             print("Observer Stopped")
  
         self.observer.join()
+
+    def do_i_test(self, x):
+        return x+1
  
  
 class Handler(FileSystemEventHandler):

@@ -1,6 +1,6 @@
 import time
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, PatternMatchingEventHandler
+from watchdog.events import FileSystemEventHandler
 from pathlib import Path
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -18,12 +18,10 @@ p = pv.Plotter() # create plotter for pyvista
 
 
 class Watcher:
-    #watchDirectory = Path("example_generate") # path where data is being read from
+    watchDirectory = Path("examples") # path where data is being read from
  
-    def __init__(self, watchDirectory, handler):
+    def __init__(self):
         self.observer = Observer()
-        self.watchDirectory = watchDirectory
-        self.handler = handler
  
     def run(self):
         event_handler = Handler()
@@ -37,17 +35,16 @@ class Watcher:
             print("Observer Stopped")
  
         self.observer.join()
+
+    def do_i_test(self, x):
+        return x+1
  
  
-class Handler(PatternMatchingEventHandler):
+class Handler(FileSystemEventHandler):
 
     """
     Decide what to do when certain events are detected in the watchDirectory
     """
-    def __init__(self):
-        # Set the patterns for PatternMatchingEventHandler
-        PatternMatchingEventHandler.__init__(self, patterns=['*.csv'],
-                                                             ignore_directories=True, case_sensitive=False)
  
     @staticmethod
     def on_any_event(event):
@@ -72,6 +69,6 @@ class Handler(PatternMatchingEventHandler):
              
 
 if __name__ == '__main__':
-    watch = Watcher(".", Handler())
+    watch = Watcher()
     watch.run()
 

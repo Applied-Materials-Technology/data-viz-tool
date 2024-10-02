@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dataviztool"
+version = "0.0.1"
+description = "A tool for managing fusion component validation experiment data."
+authors = [
+  { name = "maganasampson", email = "megan.sampson@ukaea.uk" },
+  { name = "thescepticalrabbit", email = "thescepticalrabbit@gmail.com" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: GNU LGPL",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26.0",
+]
+
+[project.urls]
+"Repository" = "https://github.com/Applied-Materials-Technology/data-viz-tool"
+"Issue Tracker" = "https://github.com/Applied-Materials-Technology/data-viz-tool/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
