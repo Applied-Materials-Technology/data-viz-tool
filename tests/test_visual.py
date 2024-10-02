@@ -14,8 +14,12 @@ import random
 import time
 
 
+def test_ifworks():
+    assert 2 == 2
+
 def test_action_without_fixtures():
     sc = dataviztool.Watcher()
 
     thing = sc.do_i_test(3)
     assert thing == 4
+
