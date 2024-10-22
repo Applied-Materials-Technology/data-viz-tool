@@ -13,7 +13,8 @@ p = pv.Plotter(shape=(1,2))
 p.subplot(0, 0)
 #mesh1 = pv.read('data/stc-thermomech-basic-bcbase_out.e')
 #mesh1 = pv.PolyData('data/Image_0006_0.tiff.csv')
-raw_data = pd.read_csv('data/Image_0006_0.tiff.csv', header=0)
+#raw_data = pd.read_csv('data/Image_0006_0.tiff.csv', header=0)
+raw_data = pd.read_csv("data/csvs/Image_0000_0.tiff.csv")
 
 data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]', 'Strain-global frame: Exx', 'Strain-global frame: Eyy']]
 data2.to_csv('newcsvfile.csv', index=False)

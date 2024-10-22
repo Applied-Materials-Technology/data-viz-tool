@@ -7,15 +7,20 @@ import time
 from matplotlib.colors import ListedColormap
 
 
+
 csv_path = "data/csvs"
-files = ["data/csvs/Image_0000_0.tiff.csv", "data/csvs/Image_0001_0.tiff.csv", "data/csvs/Image_0002_0.tiff.csv"]
+#files = ["data/csvs/Image_0000_0.tiff.csv", "data/csvs/Image_0001_0.tiff.csv", "data/csvs/Image_0002_0.tiff.csv"]
+files = ["data/csvs/Image_0000_0.tiff.csv"]
 
 
 p = pv.Plotter(shape=(1,1))
 
 
 p.subplot(0, 0)
+#p.camera.zoom(100.0)
 p.show(interactive_update=True)
+
+
 
 
 def read_csv(file):
@@ -36,6 +41,7 @@ def read_csv(file):
 def show_csv(meshcsv, raw_data):
     p.clear()
     p.update()
+    #labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
     labels = dict(zlabel='Z', xlabel='X', ylabel='Y')
     p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
     p.show_grid(**labels)
