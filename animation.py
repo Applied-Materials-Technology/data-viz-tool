@@ -11,7 +11,6 @@ csv_path = "data/csvs"
 files = ["data/csvs/Image_0000_0.tiff.csv", "data/csvs/Image_0001_0.tiff.csv", "data/csvs/Image_0002_0.tiff.csv"]
 
 
-points_csv = []
 p = pv.Plotter(shape=(1,1))
 
 
@@ -23,8 +22,7 @@ def read_csv(file):
     raw_data = pd.read_csv(file, header=0)
 
     data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]', 'Strain-global frame: Exx', 'Strain-global frame: Eyy']]
-    #data2.to_csv('newcsvfile.csv', index=False)
-
+    points_csv = []
 
 
     for i in range(len(raw_data['X[mm]'])):
@@ -39,9 +37,7 @@ def show_csv(meshcsv, raw_data):
     p.clear()
     p.update()
     labels = dict(zlabel='Z', xlabel='X', ylabel='Y')
-    #p.add_mesh(meshcsv)
-    #p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
-    p.add_mesh(meshcsv)
+    p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
     p.show_grid(**labels)
     p.add_axes(**labels)
 
