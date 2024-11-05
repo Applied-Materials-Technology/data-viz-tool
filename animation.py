@@ -32,7 +32,7 @@ def read_csv(file):
 
     for i in range(len(raw_data['X[mm]'])):
         print(raw_data['X[mm]'][i])
-        pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
+        pointstemp = [raw_data['X[mm]'][i]/100, raw_data['Y[mm]'][i]/100, raw_data['Z[mm]'][i]/100]
         points_csv.append(pointstemp)
 
     meshcsv = pv.PolyData(points_csv, force_float = False)

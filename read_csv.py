@@ -5,15 +5,13 @@ import pandas as pd
 
 from matplotlib.colors import ListedColormap
 
-#pv.set_plot_theme(pv.themes.ParaViewTheme())
+
 points_csv = []
 p = pv.Plotter(shape=(1,2))
 
-#p = pv.Plotter()
+
 p.subplot(0, 0)
-#mesh1 = pv.read('data/stc-thermomech-basic-bcbase_out.e')
-#mesh1 = pv.PolyData('data/Image_0006_0.tiff.csv')
-#raw_data = pd.read_csv('data/Image_0006_0.tiff.csv', header=0)
+
 raw_data = pd.read_csv("data/csvs/Image_0000_0.tiff.csv")
 
 data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]', 'Strain-global frame: Exx', 'Strain-global frame: Eyy']]
@@ -31,7 +29,7 @@ meshcsv = pv.PolyData(points_csv, force_float = False)
 
 
 labels = dict(zlabel='Z', xlabel='X', ylabel='Y')
-#p.add_mesh(meshcsv)
+
 p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
 p.show_grid(**labels)
 p.add_axes(**labels)
@@ -49,8 +47,6 @@ p.subplot(0,1)
 mesh3 = pv.PolyData(points)
 
 
-#plt.plot(xpoints, ypoints)
-#plt.show()
 
 p.add_mesh(mesh3)
 
