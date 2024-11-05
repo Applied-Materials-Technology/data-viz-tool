@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
+from pathlib import Path
+import os
 
 from matplotlib.colors import ListedColormap
 
@@ -10,15 +12,13 @@ from matplotlib.colors import ListedColormap
 
 csv_path = "data/csvs"
 #files = ["data/csvs/Image_0000_0.tiff.csv", "data/csvs/Image_0001_0.tiff.csv", "data/csvs/Image_0002_0.tiff.csv"]
-#files = ["data/csvs/Image_0000_0.tiff.csv"]
-files = ["data/csvs/Image_0001_0.tiff.csv", "data/csvs/Image_0002_0.tiff.csv"]
+files = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0001_0.tiff.csv")), Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0002_0.tiff.csv"))]
 
 
 p = pv.Plotter(shape=(1,1))
 
 
 p.subplot(0, 0)
-#p.camera.zoom(10.0)
 p.show(interactive_update=True)
 
 

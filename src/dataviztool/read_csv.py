@@ -2,6 +2,8 @@ import pyvista as pv
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from pathlib import Path
+import os
 
 from matplotlib.colors import ListedColormap
 
@@ -12,7 +14,7 @@ p = pv.Plotter(shape=(1,2))
 
 p.subplot(0, 0)
 
-raw_data = pd.read_csv("data/csvs/Image_0000_0.tiff.csv")
+raw_data = pd.read_csv(Path(os.path.join(Path.cwd().parent.parent,"data/csvs/Image_0000_0.tiff.csv")))
 
 data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]', 'Strain-global frame: Exx', 'Strain-global frame: Eyy']]
 data2.to_csv('newcsvfile.csv', index=False)

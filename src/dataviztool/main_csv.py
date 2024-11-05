@@ -19,7 +19,7 @@ p = pv.Plotter() # create plotter for pyvista
 
 
 class WatcherCSV:
-    watchDirectory = Path("data") # path where data is being read from
+    watchDirectory = Path(os.path.join(Path.cwd().parent.parent,"data")) # path where data is being read from
  
     def __init__(self):
         self.observer = Observer()
