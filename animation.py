@@ -10,14 +10,15 @@ from matplotlib.colors import ListedColormap
 
 csv_path = "data/csvs"
 #files = ["data/csvs/Image_0000_0.tiff.csv", "data/csvs/Image_0001_0.tiff.csv", "data/csvs/Image_0002_0.tiff.csv"]
-files = ["data/csvs/Image_0000_0.tiff.csv"]
+#files = ["data/csvs/Image_0000_0.tiff.csv"]
+files = ["data/csvs/Image_0001_0.tiff.csv", "data/csvs/Image_0002_0.tiff.csv"]
 
 
 p = pv.Plotter(shape=(1,1))
 
 
 p.subplot(0, 0)
-#p.camera.zoom(100.0)
+#p.camera.zoom(10.0)
 p.show(interactive_update=True)
 
 
@@ -32,7 +33,7 @@ def read_csv(file):
 
     for i in range(len(raw_data['X[mm]'])):
         print(raw_data['X[mm]'][i])
-        pointstemp = [raw_data['X[mm]'][i]/100, raw_data['Y[mm]'][i]/100, raw_data['Z[mm]'][i]/100]
+        pointstemp = [raw_data['X[mm]'][i]/50, raw_data['Y[mm]'][i]/50, raw_data['Z[mm]'][i]/50]
         points_csv.append(pointstemp)
 
     meshcsv = pv.PolyData(points_csv, force_float = False)
@@ -41,15 +42,13 @@ def read_csv(file):
 def show_csv(meshcsv, raw_data):
     p.clear()
     p.update()
-    #labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
-    labels = dict(zlabel='Z', xlabel='X', ylabel='Y')
+    labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
     p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
-    p.show_grid(**labels)
-    p.add_axes(**labels)
+    p.show_bounds(**labels)
 
     p.add_scalar_bar(
 
-    'Insert label')
+    'Label')
 
 
     p.show(interactive_update=True)
