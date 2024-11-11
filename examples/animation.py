@@ -33,9 +33,14 @@ def read_csv(file):
 
     for i in range(len(raw_data['X[mm]'])):
         print(raw_data['X[mm]'][i])
-        pointstemp = [raw_data['X[mm]'][i]/50, raw_data['Y[mm]'][i]/50, raw_data['Z[mm]'][i]/50]
+        pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
         points_csv.append(pointstemp)
-
+    print(f"{np.max(raw_data['X[mm]'][:])=}")
+    print(f"{np.min(raw_data['X[mm]'][:])=}")
+    print(f"{np.max(raw_data['Y[mm]'][:])=}")
+    print(f"{np.min(raw_data['Y[mm]'][:])=}")
+    print(f"{np.max(raw_data['Z[mm]'][:])=}")
+    print(f"{np.min(raw_data['Z[mm]'][:])=}")
     meshcsv = pv.PolyData(points_csv, force_float = False)
     show_csv(meshcsv, raw_data)
 
@@ -53,7 +58,9 @@ def show_csv(meshcsv, raw_data):
 
     p.show(interactive_update=True)
     p.update()
+    p.camera_position = "xy"
     time.sleep(5)
+
 
 for file in files:
     read_csv(file)
