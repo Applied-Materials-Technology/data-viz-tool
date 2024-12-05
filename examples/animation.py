@@ -11,7 +11,6 @@ from matplotlib.colors import ListedColormap
 
 
 csv_path = "data/csvs"
-#files = ["data/csvs/Image_0000_0.tiff.csv", "data/csvs/Image_0001_0.tiff.csv", "data/csvs/Image_0002_0.tiff.csv"]
 files = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0001_0.tiff.csv")), Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0002_0.tiff.csv")),
          Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0003_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0004_0.tiff.csv")),
          Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0005_0.tiff.csv")), Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0006_0.tiff.csv")),
