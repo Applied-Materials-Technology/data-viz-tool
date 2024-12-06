@@ -5,6 +5,8 @@ import pandas as pd
 import time
 from pathlib import Path
 import os
+#import OpenGL as gl
+
 
 from matplotlib.colors import ListedColormap
 
@@ -20,10 +22,15 @@ files_set2 = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0006_0.tiff.c
 
 
 p = pv.Plotter(shape=(1,2))
+print(p.render_window)
+p2 = pv.Plotter(shape=(1,1))
+print(p2.render_window.IsCurrent())
 
 
 #p.subplot(0, 0)
-#p.show(interactive_update=True)
+p.show(interactive_update=True)
+print(p.render_window.IsCurrent())
+
 
 
 
@@ -39,12 +46,15 @@ def read_csv(file):
         print(raw_data['X[mm]'][i])
         pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
         points_csv.append(pointstemp)
+    """
     print(f"{np.max(raw_data['X[mm]'][:])=}")
     print(f"{np.min(raw_data['X[mm]'][:])=}")
     print(f"{np.max(raw_data['Y[mm]'][:])=}")
     print(f"{np.min(raw_data['Y[mm]'][:])=}")
     print(f"{np.max(raw_data['Z[mm]'][:])=}")
-    print(f"{np.min(raw_data['Z[mm]'][:])=}")
+    print(f"{np.min(raw_data['Z[mm]'][:])=}")"""
+    #print("hello")
+    #gl.glclear()
     meshcsv = pv.PolyData(points_csv, force_float = False)
     show_csv2(meshcsv, raw_data)
 
@@ -67,10 +77,13 @@ def show_csv(meshcsv, raw_data):
     time.sleep(5)
 
 def show_csv2(meshcsv, raw_data):
+    p.show(interactive=True, interactive_update = True)
+    p._check_rendered()
+    print("hello")
     p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False) # add the data from new file to the plotter
     p.show(interactive=True, interactive_update = True)
     p.update()
-    p.close()
+    #gl.glclear()
 
 
 from threading import Thread
@@ -80,8 +93,10 @@ def func1():
         read_csv(file)
 
 def func2():
-    print("Working")
-
+    #print("Working")
+    for file in files_set2:
+        read_csv(file)
+"""
 if __name__ == '__main__':
     Thread(target = func1).start()
-    Thread(target = func2).start()
+    Thread(target = func2).start()"""
