@@ -19,6 +19,11 @@ files_set1 = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0001_0.tiff.c
 files_set2 = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0006_0.tiff.csv")),
          Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0007_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0008_0.tiff.csv")),
          Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0009_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0010_0.tiff.csv"))]
+file_set_full = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0001_0.tiff.csv")), Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0002_0.tiff.csv")),
+         Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0003_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0004_0.tiff.csv")),
+         Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0005_0.tiff.csv")), Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0006_0.tiff.csv")),
+         Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0007_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0008_0.tiff.csv")),
+         Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0009_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0010_0.tiff.csv"))]
 
 
 p = pv.Plotter(shape=(1,2))
@@ -63,11 +68,12 @@ def show_csv2(meshcsv, raw_data, subplot):
     p.subplot(0,subplot)
     p.show(interactive_update=True)
     p._check_rendered()
-    print("hello")
+    #print("hello")
     p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False) # add the data from new file to the plotter
     p.show(interactive=True, interactive_update = True)
     p.camera_position = "xy"
     p.update()
+    print(subplot)
 
 
 def func1():
@@ -75,12 +81,11 @@ def func1():
         read_csv(file, 0)
 
 def func2():
-    #print("Working")
     for file in files_set2:
         read_csv(file, 1)
 
 import asyncio
-
+"""
 async def func0():
     func1()
     #await asyncio.sleep(1)
@@ -88,7 +93,26 @@ async def func0():
 
 async def main():
     res = await asyncio.gather(func0())
-    return res
+    return res"""
+
+async def say_hello_async():
+    await asyncio.sleep(1)
+    for file in file_set_full:
+        read_csv(file, 0)
+
+async def do_something_else():
+    print("Starting another task...")
+    await asyncio.sleep(1)
+    for file in file_set_full:
+        read_csv(file, 1)
+
+async def main():
+    await asyncio.gather(
+        say_hello_async(),
+        do_something_else(),
+    )
+
+asyncio.run(main())
 
 if __name__ == "__main__":
     import time
