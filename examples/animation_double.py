@@ -22,30 +22,12 @@ files_set2 = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0006_0.tiff.c
 
 
 p = pv.Plotter(shape=(1,2))
-
-rwi = pv.RenderWindowInteractor(p)
-
-
-#print(p.render_window.IsCurrent())
-p2 = pv.Plotter(shape=(1,1))
-renderer1 = p.renderers
-print(renderer1)
-print(renderer1._plotter)
-print(renderer1.active_renderer)
-#print(dir(renderer1))
-#rwi.set_render_window(p.render_window)
-#print(dir(rwi))
-#p.subplot(0, 0)
-#p2.show(interactive_update=True)
-#p.show(interactive_update=True)
-#print(p2.render_window.IsCurrent())
-#print(dir(p))
+#p.show()
 
 
 
 
-
-def read_csv(file):
+def read_csv(file, subplot):
     raw_data = pd.read_csv(file, header=0)
 
     data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]', 'Strain-global frame: Exx', 'Strain-global frame: Eyy']]
@@ -53,22 +35,13 @@ def read_csv(file):
 
 
     for i in range(len(raw_data['X[mm]'])):
-        print(raw_data['X[mm]'][i])
+        #print(raw_data['X[mm]'][i])
         pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
         points_csv.append(pointstemp)
-    """
-    print(f"{np.max(raw_data['X[mm]'][:])=}")
-    print(f"{np.min(raw_data['X[mm]'][:])=}")
-    print(f"{np.max(raw_data['Y[mm]'][:])=}")
-    print(f"{np.min(raw_data['Y[mm]'][:])=}")
-    print(f"{np.max(raw_data['Z[mm]'][:])=}")
-    print(f"{np.min(raw_data['Z[mm]'][:])=}")"""
-    #print("hello")
-    #gl.glclear()
     meshcsv = pv.PolyData(points_csv, force_float = False)
-    show_csv2(meshcsv, raw_data)
+    show_csv2(meshcsv, raw_data, subplot)
 
-def show_csv(meshcsv, raw_data):
+def show_csv(meshcsv, raw_data, subplot):
     p.subplot(0, 0)
     p.clear()
     p.update()
@@ -86,27 +59,40 @@ def show_csv(meshcsv, raw_data):
     p.camera_position = "xy"
     time.sleep(5)
 
-def show_csv2(meshcsv, raw_data):
-    p.show(interactive=True, interactive_update = True)
+def show_csv2(meshcsv, raw_data, subplot):
+    p.subplot(0,subplot)
+    p.show(interactive_update=True)
     p._check_rendered()
     print("hello")
     p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False) # add the data from new file to the plotter
     p.show(interactive=True, interactive_update = True)
+    p.camera_position = "xy"
     p.update()
-    #gl.glclear()
 
-
-from threading import Thread
 
 def func1():
     for file in files_set1:
-        read_csv(file)
+        read_csv(file, 0)
 
 def func2():
     #print("Working")
     for file in files_set2:
-        read_csv(file)
-"""
-if __name__ == '__main__':
-    Thread(target = func1).start()
-    Thread(target = func2).start()"""
+        read_csv(file, 1)
+
+import asyncio
+
+async def func0():
+    func1()
+    #await asyncio.sleep(1)
+    func2()
+
+async def main():
+    res = await asyncio.gather(func0())
+    return res
+
+if __name__ == "__main__":
+    import time
+    s = time.perf_counter()
+    asyncio.run(main())
+    elapsed = time.perf_counter() - s
+    print(f"{__file__} executed in {elapsed:0.2f} seconds.")
