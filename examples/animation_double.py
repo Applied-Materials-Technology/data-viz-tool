@@ -84,35 +84,10 @@ def func2():
     for file in files_set2:
         read_csv(file, 1)
 
-import asyncio
-
-
-async def plot_side_one():
-    await asyncio.sleep(1)
+def func3():
     for file in file_set_full:
         read_csv(file, 0)
+        read_csv(file,1)
 
-async def plot_side_two():
-    print("Starting another task...")
-    await asyncio.sleep(1)
-    for file in file_set_full:
-        read_csv(file, 1)
+func3()
 
-async def main():
-    await asyncio.gather(
-        plot_side_one(),
-        plot_side_two(),
-    )
-loop = asyncio.get_event_loop()
-
-while True:
-    #loop.run_until_complete(plot_side_one())
-    #loop.run_until_complete(plot_side_two())
-    asyncio.run(main())
-"""
-if __name__ == "__main__":
-    import time
-    s = time.perf_counter()
-    asyncio.run(main())
-    elapsed = time.perf_counter() - s
-    print(f"{__file__} executed in {elapsed:0.2f} seconds.")"""

@@ -42,3 +42,33 @@ with pl.window_size_context((500, 500)):
 
     #pl.screenshot('/tmp/big_screenshot.png')
     pl.show()
+
+"""
+import asyncio
+
+
+async def plot_side_one():
+    await asyncio.sleep(1)
+    for file in file_set_full:
+        read_csv(file, 0)
+
+async def plot_side_two():
+    print("Starting another task...")
+    await asyncio.sleep(1)
+    for file in file_set_full:
+        read_csv(file, 1)
+
+async def main():
+    await asyncio.gather(
+        plot_side_one(),
+        plot_side_two(),
+    )
+loop = asyncio.get_event_loop()
+
+
+if __name__ == "__main__":
+    import time
+    s = time.perf_counter()
+    asyncio.run(main())
+    elapsed = time.perf_counter() - s
+    print(f"{__file__} executed in {elapsed:0.2f} seconds.")"""
