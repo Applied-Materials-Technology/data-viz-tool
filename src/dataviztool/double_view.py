@@ -10,6 +10,7 @@ import os
 import random
 import time
 import pandas as pd
+import asyncio
 
 ########### full example requires pycdata ############
 
@@ -92,11 +93,25 @@ class HandlerCSV(FileSystemEventHandler):
                 except:
                     print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
 
- 
-
-             
-
-if __name__ == '__main__':
+#make periodic functions here
+async def plot_side_one():
+    await asyncio.sleep(1)
+    print("FUNC1")
     watch = WatcherCSV()
     watch.run()
+
+async def plot_side_two():
+    print("Starting another task...")
+    await asyncio.sleep(1)
+    watch = WatcherCSV()
+    watch.run()
+
+async def main():
+    await asyncio.gather(
+        plot_side_one(),
+        plot_side_two(),
+    )
+
+if __name__ == '__main__':
+    asyncio.run(main())
 
