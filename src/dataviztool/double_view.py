@@ -54,6 +54,8 @@ class HandlerCSV(FileSystemEventHandler):
         print(event.src_path)
         path1 = os.path.dirname(event.src_path)
         path2 = os.path.basename(path1)
+
+        """Change subplot for different data"""
         if path2 == "right":
             subploty = 1
         elif path2 == "left":
@@ -67,7 +69,9 @@ class HandlerCSV(FileSystemEventHandler):
             print("Watchdog received created event - % s." % event.src_path)
 
         elif event.event_type == 'modified':
-            print("Watchdog received modified event - % s." % event.src_path)  
+            print("Watchdog received modified event - % s." % event.src_path)
+
+            """For data in csv format, e.g. example csvs """  
             if 'csv' in event.src_path:
                 try:
                     p.subplot(0, subploty)
@@ -97,6 +101,7 @@ class HandlerCSV(FileSystemEventHandler):
                 except:
                     print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
             else:
+                """For reading tiff files"""
                 print("Watchdog received modified event - % s." % event.src_path)  
                 try:
                     p.subplot(0,subploty)
