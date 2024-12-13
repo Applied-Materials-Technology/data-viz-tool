@@ -21,7 +21,7 @@ p = pv.Plotter(shape=(1,2)) # create plotter for pyvista
 
 class WatcherCSV:
     #watchDirectory = Path("examples") # path where data is being read from
-    watchDirectory = Path(os.path.join(Path.cwd().parent.parent, "examples"))
+    watchDirectory = Path(os.path.join(Path.cwd().parent.parent, "inputloc"))
  
     def __init__(self):
         self.observer = Observer()
@@ -36,7 +36,7 @@ class WatcherCSV:
         except:
             self.observer.stop()
             print("Observer Stopped")
- 
+        self.observer.stop()
         self.observer.join()
 
 
@@ -46,9 +46,18 @@ class HandlerCSV(FileSystemEventHandler):
     """
     Decide what to do when certain events are detected in the watchDirectory
     """
- 
     @staticmethod
+
     def on_any_event(event):
+
+        path1 = os.path.dirname(event.src_path)
+        path2 = os.path.basename(path1)
+        if path2 == "right":
+            subploty = 1
+        elif path2 == "left":
+            subploty = 0
+
+
         if event.is_directory:
             return None
  
@@ -59,22 +68,17 @@ class HandlerCSV(FileSystemEventHandler):
             print("Watchdog received modified event - % s." % event.src_path)  
             if 'exdata' in event.src_path:
                 try:
-                    p.subplot(0, 0)
-                    #g = pv.read(Path(os.path.join(event.src_path)))
+                    p.subplot(0, subploty)
                     points_csv = []
                     raw_data = pd.read_csv(Path(os.path.join(event.src_path)), header=0)
                     data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]', 'Strain-global frame: Exx', 'Strain-global frame: Eyy']]
 
                     for i in range(len(raw_data['X[mm]'])):
-                        #print(raw_data['X[mm]'][i])
                         pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
                         points_csv.append(pointstemp)
                     meshcsv = pv.PolyData(points_csv, force_float = False)
                     p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
                     print(event.src_path)
-                    #print(time.time() - start_time)
-                    #print("FILE ACCEPTED")
-                    #p.add_mesh(g, opacity=0.5, name='data', cmap='gist_ncar') # add the data from new file to the plotter
                     p.show(interactive=True, interactive_update = True)
                     p.update()
                 except:
@@ -82,7 +86,7 @@ class HandlerCSV(FileSystemEventHandler):
             else:
                 print("Watchdog received modified event - % s." % event.src_path)  
                 try:
-                    p.subplot(0,1)
+                    p.subplot(0,subploty)
                     g = pv.read(Path(os.path.join(event.src_path)))
                     print(event.src_path)
                     print(time.time() - start_time)
@@ -94,6 +98,7 @@ class HandlerCSV(FileSystemEventHandler):
                     print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
 
 #make periodic functions here
+"""
 async def plot_side_one():
     await asyncio.sleep(1)
     print("FUNC1")
@@ -113,5 +118,9 @@ async def main():
     )
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    asyncio.run(main())"""
+
+if __name__ == '__main__':
+    watch = WatcherCSV()
+    watch.run()
 
