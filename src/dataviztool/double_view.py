@@ -79,8 +79,19 @@ class HandlerCSV(FileSystemEventHandler):
                         pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
                         points_csv.append(pointstemp)
                     meshcsv = pv.PolyData(points_csv, force_float = False)
+
                     p.camera_position = "xy"
                     p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
+
+                    labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
+                    p.show_bounds(**labels)
+
+                    p.add_scalar_bar(
+
+                    'Label')
+
+                    p.camera_position = "xy"
+
                     p.show(interactive=True, interactive_update = True)
                     p.update()
                 except:
