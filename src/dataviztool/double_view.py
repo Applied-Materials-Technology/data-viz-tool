@@ -20,23 +20,25 @@ p = pv.Plotter(shape=(1,2)) # create plotter for pyvista
 
 
 class WatcherCSV:
-    #watchDirectory = Path("examples") # path where data is being read from
+
     watchDirectory = Path(os.path.join(Path.cwd().parent.parent, "inputloc"))
  
     def __init__(self):
         self.observer = Observer()
  
     def run(self):
+
         event_handler = HandlerCSV()
         self.observer.schedule(event_handler, self.watchDirectory, recursive = True)
         self.observer.start()
+
         try:
             while True:
                 time.sleep(5)
         except:
             self.observer.stop()
             print("Observer Stopped")
-        self.observer.stop()
+
         self.observer.join()
 
 
@@ -46,10 +48,10 @@ class HandlerCSV(FileSystemEventHandler):
     """
     Decide what to do when certain events are detected in the watchDirectory
     """
+
     @staticmethod
-
     def on_any_event(event):
-
+        print(event.src_path)
         path1 = os.path.dirname(event.src_path)
         path2 = os.path.basename(path1)
         if path2 == "right":
@@ -66,7 +68,7 @@ class HandlerCSV(FileSystemEventHandler):
 
         elif event.event_type == 'modified':
             print("Watchdog received modified event - % s." % event.src_path)  
-            if 'exdata' in event.src_path:
+            if 'csv' in event.src_path:
                 try:
                     p.subplot(0, subploty)
                     points_csv = []
@@ -77,8 +79,8 @@ class HandlerCSV(FileSystemEventHandler):
                         pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
                         points_csv.append(pointstemp)
                     meshcsv = pv.PolyData(points_csv, force_float = False)
+                    p.camera_position = "xy"
                     p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
-                    print(event.src_path)
                     p.show(interactive=True, interactive_update = True)
                     p.update()
                 except:
@@ -91,34 +93,13 @@ class HandlerCSV(FileSystemEventHandler):
                     print(event.src_path)
                     print(time.time() - start_time)
                     print("FILE ACCEPTED")
+                    p.camera_position = "xy"
                     p.add_mesh(g, opacity=0.5, name='data', cmap='gist_ncar') # add the data from new file to the plotter
                     p.show(interactive=True, interactive_update = True)
                     p.update()
                 except:
                     print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
 
-#make periodic functions here
-"""
-async def plot_side_one():
-    await asyncio.sleep(1)
-    print("FUNC1")
-    watch = WatcherCSV()
-    watch.run()
-
-async def plot_side_two():
-    print("Starting another task...")
-    await asyncio.sleep(1)
-    watch = WatcherCSV()
-    watch.run()
-
-async def main():
-    await asyncio.gather(
-        plot_side_one(),
-        plot_side_two(),
-    )
-
-if __name__ == '__main__':
-    asyncio.run(main())"""
 
 if __name__ == '__main__':
     watch = WatcherCSV()
