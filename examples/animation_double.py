@@ -5,7 +5,7 @@ import pandas as pd
 import time
 from pathlib import Path
 import os
-#import OpenGL as gl
+
 
 
 from matplotlib.colors import ListedColormap
@@ -69,16 +69,7 @@ def show_csv2(meshcsv, raw_data, subplot):
     p.show(interactive=True, interactive_update = True)
     p.camera_position = "xy"
     p.update()
-    print(subplot)
 
-
-def func1():
-    for file in files_set1:
-        read_csv(file, 0)
-
-def func2():
-    for file in files_set2:
-        read_csv(file, 1)
 
 def func3():
     for file in file_set_full:

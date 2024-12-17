@@ -15,7 +15,6 @@ import asyncio
 ########### full example requires pycdata ############
 
 start_time = time.time() # get base time to start timer
-
 p = pv.Plotter(shape=(1,2)) # create plotter for pyvista
 
 
