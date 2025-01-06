@@ -24,7 +24,7 @@ class Drawer:
         self._run_time = run_time
         self._plotter = plotter
 
-    def csv_plotter(subploty, event):
+    def csv_plotter(subploty, event, p):
         try:
             p.subplot(0, subploty)
             points_csv = []
@@ -125,7 +125,7 @@ class HandlerCSV(FileSystemEventHandler):
 
             """For data in csv format, e.g. example csvs """  
             if 'csv' in event.src_path:
-                drawer1.csv_plotter(event = event)
+                drawer1.csv_plotter(event = event, p = p)
                 """
                 try:
                     p.subplot(0, subploty)
