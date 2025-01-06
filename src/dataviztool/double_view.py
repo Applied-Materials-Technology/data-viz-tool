@@ -18,6 +18,59 @@ start_time = time.time() # get base time to start timer
 p = pv.Plotter(shape=(1,2)) # create plotter for pyvista
 
 
+class Drawer:
+    def __init__(self, run_time: float = 0.0, plotter=p) -> None:
+        self._start_time = 0.0
+        self._run_time = run_time
+        self._plotter = plotter
+
+    def csv_plotter(subploty, event):
+        try:
+            p.subplot(0, subploty)
+            points_csv = []
+            raw_data = pd.read_csv(Path(os.path.join(event.src_path)), header=0)
+            data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]', 'Strain-global frame: Exx', 'Strain-global frame: Eyy']]
+
+            for i in range(len(raw_data['X[mm]'])):
+                pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
+                points_csv.append(pointstemp)
+            meshcsv = pv.PolyData(points_csv, force_float = False)
+
+            print("HELLO I AM TRYING")
+            p.camera_position = "xy"
+            p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
+
+            labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
+            p.show_bounds(**labels)
+
+            p.add_scalar_bar(
+
+            'Label')
+
+            p.camera_position = "xy"
+
+            p.show(interactive=True, interactive_update = True)
+            p.update()
+        except:
+            print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
+    
+    def tiff_plotter(suploty, event):
+        print("Watchdog received modified event - % s." % event.src_path)  
+        try:
+            p.subplot(0,subploty)
+            g = pv.read(Path(os.path.join(event.src_path)))
+            print(event.src_path)
+            print(time.time() - start_time)
+            print("FILE ACCEPTED")
+            p.camera_position = "xy"
+            p.add_mesh(g, opacity=0.5, name='data', cmap='gist_ncar') # add the data from new file to the plotter
+            p.show(interactive=True, interactive_update = True)
+            p.update()
+        except:
+            print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
+
+drawer1 = Drawer()
+
 class WatcherCSV:
 
     watchDirectory = Path(os.path.join(Path.cwd().parent.parent, "inputloc"))
@@ -72,6 +125,8 @@ class HandlerCSV(FileSystemEventHandler):
 
             """For data in csv format, e.g. example csvs """  
             if 'csv' in event.src_path:
+                drawer1.csv_plotter(event = event)
+                """
                 try:
                     p.subplot(0, subploty)
                     points_csv = []
@@ -98,9 +153,11 @@ class HandlerCSV(FileSystemEventHandler):
                     p.show(interactive=True, interactive_update = True)
                     p.update()
                 except:
-                    print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
+                    print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded"""
             else:
                 """For reading tiff files"""
+                drawer1.tiff_plotter(event = event)
+                """
                 print("Watchdog received modified event - % s." % event.src_path)  
                 try:
                     p.subplot(0,subploty)
@@ -113,7 +170,8 @@ class HandlerCSV(FileSystemEventHandler):
                     p.show(interactive=True, interactive_update = True)
                     p.update()
                 except:
-                    print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded
+                    print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded"""
+
 
 
 if __name__ == '__main__':

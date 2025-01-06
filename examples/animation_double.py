@@ -41,40 +41,29 @@ def read_csv(file, subplot):
         pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
         points_csv.append(pointstemp)
     meshcsv = pv.PolyData(points_csv, force_float = False)
-    show_csv2(meshcsv, raw_data, subplot)
+    show_csv(meshcsv, raw_data, subplot)
+
+
 
 def show_csv(meshcsv, raw_data, subplot):
-    p.subplot(0, 0)
-    p.clear()
-    p.update()
-    labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
-    p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
-    p.show_bounds(**labels)
-
-    p.add_scalar_bar(
-
-    'Label')
-
-
-    p.show(interactive_update=True)
-    p.update()
-    p.camera_position = "xy"
-    time.sleep(5)
-
-def show_csv2(meshcsv, raw_data, subplot):
     p.subplot(0,subplot)
     p.show(interactive_update=True)
-    p._check_rendered()
     p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False) # add the data from new file to the plotter
     p.show(interactive=True, interactive_update = True)
     p.camera_position = "xy"
+    labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
+    p.show_bounds(**labels)
+    p.add_scalar_bar(
+
+    'Label')
     p.update()
+    time.sleep(5)
 
 
-def func3():
+def display():
     for file in file_set_full:
         read_csv(file, 0)
         read_csv(file,1)
 
-func3()
+display()
 
