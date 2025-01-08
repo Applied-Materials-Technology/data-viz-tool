@@ -47,30 +47,51 @@ class HandlerCSV(FileSystemEventHandler):
 
     @staticmethod
     def on_any_event(event):
+        
         #print(event.src_path)
 
         displayer.subplot_decider(event.src_path)
 
         if event.is_directory:
+
             return None
  
         elif event.event_type == 'created':
+
             #print("Watchdog received created event - % s." % event.src_path)
+
             pass
 
         elif event.event_type == 'modified':
+
             #print("Watchdog received modified event - % s." % event.src_path)
+
             pass
 
-            """For data in csv format, e.g. example csvs """  
+
             if 'csv' in event.src_path:
+
+                #For data in csv format, e.g. example csvs
+
                 displayer.csv_displayer(event.src_path)
+
             else:
-                """For reading tiff files"""
+
+                #For reading tiff files
+
                 displayer.tiff_displayer(event.src_path)
 
 class Displayer():
-    def __init__(self, p, subploty: int = 1, x_coord = "", y_coord = "", z_coord = "", colours = "", current_file = "") -> None:
+    def __init__(self,
+                  p = None, 
+                  subploty: int = 1, 
+                  x_coord: str = 'coor.X [mm]', 
+                  y_coord: str = 'coor.Y [mm]', 
+                  z_coord: str = 'coor.Z [mm]', 
+                  colours: str = 'disp.Horizontal Displacement U [mm]', 
+                  current_file: str = "",
+                  automake_plotter: bool = True) -> None:
+        
         self.p = p
         self.subploty = subploty
         self.x_coord = x_coord
@@ -78,6 +99,19 @@ class Displayer():
         self.z_coord = z_coord
         self.colours = colours
         self.current_file = current_file
+        self.automake_plotter = automake_plotter
+
+        if self.automake_plotter == True:
+
+            self.create_plotter()
+
+    def create_plotter(self):
+
+        """
+        Create the plotter if not already defined
+        """
+
+        self.p = pv.Plotter(shape=(1,2))
 
     def subplot_decider(self, event):
         path1 = os.path.dirname(event)
@@ -91,6 +125,7 @@ class Displayer():
 
     def csv_displayer(self, event):
         if self.current_file != event:
+
             self.p.subplot(0, self.subploty)
             points_csv = []
             raw_data = pd.read_csv(Path(os.path.join(event)), header=0)
@@ -118,12 +153,13 @@ class Displayer():
             print(event)
 
             self.current_file = event
+
         else:
             #print("WAITING FOR FILE TRANSFER....")
             pass
 
     def tiff_displayer(self, event):
-        try:
+        if self.current_file != event:
             self.p.subplot(0,self.subploty)
             g = pv.read(Path(os.path.join(event)))
             print(time.time() - start_time)
@@ -131,22 +167,58 @@ class Displayer():
             self.p.add_mesh(g, opacity=0.5, name='data', cmap='gist_ncar') # add the data from new file to the plotter
             self.p.show(interactive=True, interactive_update = True)
             self.p.update()
-        except:
+        else:
             #print("WAITING FOR FILE TRANSFER....")
             pass
 
-    def load_csv(self, choose_x, choose_y, choose_z, choose_c):
-        print("getting csv details...")
+    def set_csv_coords(self, choose_x, choose_y, choose_z, choose_c):
+
+        """
+        Set x, y, z and scalar values together
+        """
+
+        self.set_x_coord(choose_x)
+        self.set_y_coord(choose_y)
+        self.set_z_coord(choose_z)
+        self.set_scalar_coord(choose_c)
+
+    def set_x_coord(self, choose_x):
+
+        """
+        Choose what value from the csv to be the x coordinate
+        """
+
         self.x_coord = choose_x
+
+    def set_y_coord(self, choose_y):
+
+        """
+        Choose what value from the csv to be the y coordinate
+        """
+    
         self.y_coord = choose_y
+
+    def set_z_coord(self, choose_z):
+
+        """
+        Choose what value from the csv to be the z coordinate
+        """
+        
         self.z_coord = choose_z
-        self.colours = choose_c
+
+    def set_scalar_coord(self, choose_c):
+
+        """
+        Choose what value from the csv to be the scalar value
+        """
+        
+        self.c_coord = choose_c
 
 
 
 if __name__ == '__main__':
     watch = WatcherCSV()
-    displayer = Displayer(pv.Plotter(shape=(1,2)))
-    displayer.load_csv('coor.X [mm]', 'coor.Y [mm]' ,'coor.Z [mm]', 'disp.Horizontal Displacement U [mm]')
+    displayer = Displayer()
+    displayer.set_csv_coords('coor.X [mm]', 'coor.Y [mm]' ,'coor.Z [mm]', 'disp.Horizontal Displacement U [mm]')
     watch.run()
 
