@@ -12,10 +12,8 @@ import time
 import pandas as pd
 import asyncio
 
-########### full example requires pycdata ############
 
 start_time = time.time() # get base time to start timer
-
 
 class WatcherCSV:
 
@@ -51,7 +49,7 @@ class HandlerCSV(FileSystemEventHandler):
     def on_any_event(event):
         #print(event.src_path)
 
-        displayer.subplot_decide(event.src_path)
+        displayer.subplot_decider(event.src_path)
 
         if event.is_directory:
             return None
@@ -66,23 +64,22 @@ class HandlerCSV(FileSystemEventHandler):
 
             """For data in csv format, e.g. example csvs """  
             if 'csv' in event.src_path:
-                #displayer.csv_displayer(subploty, event.src_path)
                 displayer.csv_displayer(event.src_path)
             else:
                 """For reading tiff files"""
-                #displayer.tiff_displayer(subploty, event.src_path)
                 displayer.tiff_displayer(event.src_path)
 
 class Displayer():
-    def __init__(self, p, subploty: int = 1, x_coord = "", y_coord = "", z_coord = "", colours = "") -> None:
+    def __init__(self, p, subploty: int = 1, x_coord = "", y_coord = "", z_coord = "", colours = "", current_file = "") -> None:
         self.p = p
         self.subploty = subploty
         self.x_coord = x_coord
         self.y_coord = y_coord
         self.z_coord = z_coord
         self.colours = colours
+        self.current_file = current_file
 
-    def subplot_decide(self, event):
+    def subplot_decider(self, event):
         path1 = os.path.dirname(event)
         path2 = os.path.basename(path1)
 
@@ -93,7 +90,7 @@ class Displayer():
             self.subploty = 0
 
     def csv_displayer(self, event):
-        try:
+        if self.current_file != event:
             self.p.subplot(0, self.subploty)
             points_csv = []
             raw_data = pd.read_csv(Path(os.path.join(event)), header=0)
@@ -105,7 +102,9 @@ class Displayer():
                 points_csv.append(pointstemp)
             meshcsv = pv.PolyData(points_csv, force_float = False)
 
-            self.p.add_mesh(meshcsv, scalars = raw_data['disp.Horizontal Displacement U [mm]'],show_scalar_bar=False, interpolate_before_map = False)
+            print(time.time() - start_time)
+
+            self.p.add_mesh(meshcsv, scalars = raw_data[self.colours],show_scalar_bar=False, interpolate_before_map = False)
 
             labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
             self.p.show_bounds(**labels)
@@ -115,18 +114,25 @@ class Displayer():
             self.p.camera_position = "xy"
 
             self.p.show(interactive=True, interactive_update = True)
-        except:
+
+            print(event)
+
+            self.current_file = event
+        else:
+            #print("WAITING FOR FILE TRANSFER....")
             pass
 
     def tiff_displayer(self, event):
         try:
             self.p.subplot(0,self.subploty)
             g = pv.read(Path(os.path.join(event)))
+            print(time.time() - start_time)
             self.p.camera_position = "xy"
             self.p.add_mesh(g, opacity=0.5, name='data', cmap='gist_ncar') # add the data from new file to the plotter
             self.p.show(interactive=True, interactive_update = True)
             self.p.update()
         except:
+            #print("WAITING FOR FILE TRANSFER....")
             pass
 
     def load_csv(self, choose_x, choose_y, choose_z, choose_c):
