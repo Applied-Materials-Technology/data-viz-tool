@@ -57,7 +57,7 @@ def show_csv(meshcsv, raw_data, subplot):
 
     'Label')
     p.update()
-    time.sleep(5)
+    #time.sleep(5)
 
 
 def display():

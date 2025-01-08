@@ -77,27 +77,29 @@ class HandlerCSV(FileSystemEventHandler):
                     p.subplot(0, subploty)
                     points_csv = []
                     raw_data = pd.read_csv(Path(os.path.join(event.src_path)), header=0)
-                    data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]', 'Strain-global frame: Exx', 'Strain-global frame: Eyy']]
+                    #data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]', 'Strain-global frame: Exx', 'Strain-global frame: Eyy']]
+                    data2 = raw_data[['coor.X [mm]', 'coor.Y [mm]' ,'coor.Z [mm]', 'disp.Horizontal Displacement U [mm]']]
 
-                    for i in range(len(raw_data['X[mm]'])):
-                        pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
+                    #for i in range(len(raw_data['X[mm]'])):
+                    for i in range(len(raw_data['coor.X [mm]'])):
+                        #pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
+                        pointstemp = [raw_data['coor.X [mm]'][i], raw_data['coor.Y [mm]'][i], raw_data['coor.Z [mm]'][i]]
                         points_csv.append(pointstemp)
                     meshcsv = pv.PolyData(points_csv, force_float = False)
 
-                    p.camera_position = "xy"
-                    p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
+                    #p.camera_position = "xy"
+                    #p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False)
+                    p.add_mesh(meshcsv, scalars = raw_data['disp.Horizontal Displacement U [mm]'],show_scalar_bar=False, interpolate_before_map = False)
 
                     labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
                     p.show_bounds(**labels)
 
-                    p.add_scalar_bar(
-
-                    'Label')
+                    p.add_scalar_bar('Label')
 
                     p.camera_position = "xy"
 
                     p.show(interactive=True, interactive_update = True)
-                    p.update()
+                    #p.update()
                 except:
                     print("WAITING FOR FILE TRANSFER....") # error occurs when trying to open a file before it's fully uploaded"""
             else:
