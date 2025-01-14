@@ -75,10 +75,10 @@ def display():
 
 def csv_displayer(file, subploty):
 
-    x_coord = 'Coordinates.Image X [Pixel]'
-    y_coord = 'Coordinates.Image Y [Pixel]'
+    x_coord = 'coor.X [mm]'
+    y_coord = 'coor.Y [mm]'
     z_coord = 'coor.Z [mm]'
-    colours = 'disp.Horizontal Displacement U [mm]'
+    colours = 'disp.Vertical Displacement V [mm]'
 
     p.subplot(0, subploty)
     points_csv = []
@@ -93,7 +93,7 @@ def csv_displayer(file, subploty):
     meshcsv = pv.PolyData(points_csv, force_float = False)
 
 
-    p.add_mesh(meshcsv, scalars = raw_data[colours],show_scalar_bar=False, interpolate_before_map = False)
+    p.add_mesh(meshcsv, color='magenta', scalars = raw_data[colours],show_scalar_bar=False, interpolate_before_map = False, cmap = plt.get_cmap("gist_grey  ", 10))
 
     labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
     p.show_bounds(**labels)

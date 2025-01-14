@@ -89,6 +89,7 @@ class Displayer():
                   y_coord: str = 'coor.Y [mm]', 
                   z_coord: str = 'coor.Z [mm]', 
                   colours: str = 'disp.Horizontal Displacement U [mm]', 
+                  colourmap: str = 'viridis',
                   current_file: str = "",
                   automake_plotter: bool = True) -> None:
         
@@ -98,6 +99,7 @@ class Displayer():
         self.y_coord = y_coord
         self.z_coord = z_coord
         self.colours = colours
+        self.colourmap = colourmap
         self.current_file = current_file
         self.automake_plotter = automake_plotter
 
@@ -213,6 +215,14 @@ class Displayer():
         """
         
         self.c_coord = choose_c
+
+    def set_cmap(self, colourmap):
+
+        """
+        Change the colour map from the selection of valid matplotlib colour maps
+        """
+        
+        self.colourmap = plt.get_cmap(colourmap, 10)
 
 
 
