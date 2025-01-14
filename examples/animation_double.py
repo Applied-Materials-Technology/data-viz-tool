@@ -75,8 +75,8 @@ def display():
 
 def csv_displayer(file, subploty):
 
-    x_coord = 'coor.X [mm]'
-    y_coord = 'coor.Y [mm]'
+    x_coord = 'Coordinates.Image X [Pixel]'
+    y_coord = 'Coordinates.Image Y [Pixel]'
     z_coord = 'coor.Z [mm]'
     colours = 'disp.Horizontal Displacement U [mm]'
 
