@@ -114,6 +114,10 @@ class Displayer():
         """
 
         self.p = pv.Plotter(shape=(1,2))
+        self.p.subplot(0,0)
+        self.p.add_title("Experiment View")
+        self.p.subplot(0,1)
+        self.p.add_title("Simulation View")
 
     def subplot_decider(self, event):
         path1 = os.path.dirname(event)

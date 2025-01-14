@@ -32,7 +32,10 @@ file_set_full = [Path(os.path.join(half_path, i)) for i in file_names]
 #print(file_set_full2)
 
 p = pv.Plotter(shape=(1,2))
-
+p.subplot(0,0)
+p.add_title("Experiment View")
+p.subplot(0,1)
+p.add_title("Simulation View")
 
 def read_csv(file, subplot):
 
@@ -54,14 +57,14 @@ def show_csv(meshcsv, raw_data, subplot):
     p.subplot(0,subplot)
     p.show(interactive_update=True)
     p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False) # add the data from new file to the plotter
-    p.show(interactive=True, interactive_update = True)
-    p.camera_position = "xy"
     labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
     p.show_bounds(**labels)
     p.add_scalar_bar(
 
     'Label')
     p.update()
+    p.show(interactive=True, interactive_update = True)
+    p.camera_position = "xy"
     #time.sleep(5)
 
 
@@ -93,12 +96,12 @@ def csv_displayer(file, subploty):
     meshcsv = pv.PolyData(points_csv, force_float = False)
 
 
-    p.add_mesh(meshcsv, color='magenta', scalars = raw_data[colours],show_scalar_bar=False, interpolate_before_map = False, cmap = plt.get_cmap("gist_grey  ", 10))
+    p.add_mesh(meshcsv, scalars = raw_data[colours],show_scalar_bar=False, interpolate_before_map = False, cmap = plt.get_cmap("viridis", 10))
 
     labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
     p.show_bounds(**labels)
 
-    p.add_scalar_bar('Label')
+    p.add_scalar_bar('Vertical Dispalcement V [mm]')
 
     p.camera_position = "xy"
 
