@@ -101,7 +101,7 @@ def csv_displayer(file, subploty):
     labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
     p.show_bounds(**labels)
 
-    p.add_scalar_bar('Vertical Dispalcement V [mm]')
+    p.add_scalar_bar('Vertical Displacement V [mm]')
 
     p.camera_position = "xy"
 

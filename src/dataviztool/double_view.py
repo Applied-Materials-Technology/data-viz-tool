@@ -88,8 +88,9 @@ class Displayer():
                   x_coord: str = 'coor.X [mm]', 
                   y_coord: str = 'coor.Y [mm]', 
                   z_coord: str = 'coor.Z [mm]', 
-                  colours: str = 'disp.Horizontal Displacement U [mm]', 
+                  colours: str = 'disp.Vertical Displacement V [mm]', 
                   colourmap: str = 'viridis',
+                  chunks: int = 10,
                   current_file: str = "",
                   automake_plotter: bool = True) -> None:
         
@@ -100,12 +101,16 @@ class Displayer():
         self.z_coord = z_coord
         self.colours = colours
         self.colourmap = colourmap
+        self.chunks = chunks
         self.current_file = current_file
         self.automake_plotter = automake_plotter
+
+        self.set_cmap(self.colourmap, self.chunks)
 
         if self.automake_plotter == True:
 
             self.create_plotter()
+
 
     def create_plotter(self):
 
@@ -145,12 +150,12 @@ class Displayer():
 
             print(time.time() - start_time)
 
-            self.p.add_mesh(meshcsv, scalars = raw_data[self.colours],show_scalar_bar=False, interpolate_before_map = False)
+            self.p.add_mesh(meshcsv, scalars = raw_data[self.colours],show_scalar_bar=False, interpolate_before_map = False, cmap = plt.get_cmap(self.colourmap, self.chunks))
 
             labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
             self.p.show_bounds(**labels)
 
-            self.p.add_scalar_bar('Label')
+            self.p.add_scalar_bar(self.colours)
 
             self.p.camera_position = "xy"
 
@@ -220,19 +225,19 @@ class Displayer():
         
         self.c_coord = choose_c
 
-    def set_cmap(self, colourmap):
+    def set_cmap(self, colourmap, chunks):
 
         """
         Change the colour map from the selection of valid matplotlib colour maps
         """
         
-        self.colourmap = plt.get_cmap(colourmap, 10)
+        self.colourmap = plt.get_cmap(colourmap, chunks)
 
 
 
 if __name__ == '__main__':
     watch = WatcherCSV()
     displayer = Displayer()
-    displayer.set_csv_coords('coor.X [mm]', 'coor.Y [mm]' ,'coor.Z [mm]', 'disp.Horizontal Displacement U [mm]')
+    displayer.set_csv_coords('coor.X [mm]', 'coor.Y [mm]' ,'coor.Z [mm]', 'disp.Vertical Displacement V [mm]')
     watch.run()
 
