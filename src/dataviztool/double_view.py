@@ -92,7 +92,8 @@ class Displayer():
                   colourmap: str = 'viridis',
                   chunks: int = 10,
                   current_file: str = "",
-                  automake_plotter: bool = True) -> None:
+                  automake_plotter: bool = True,
+                  make_labels: int = 0) -> None:
         
         self.p = p
         self.subploty = subploty
@@ -104,6 +105,7 @@ class Displayer():
         self.chunks = chunks
         self.current_file = current_file
         self.automake_plotter = automake_plotter
+        self.make_labels = make_labels
 
         self.set_cmap(self.colourmap, self.chunks)
 
@@ -152,12 +154,20 @@ class Displayer():
 
             self.p.add_mesh(meshcsv, scalars = raw_data[self.colours],show_scalar_bar=False, interpolate_before_map = False, cmap = plt.get_cmap(self.colourmap, self.chunks))
 
+            if self.make_labels < 2:
+                labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
+                self.p.show_bounds(**labels, mesh = meshcsv)
+                self.p.camera_position = "xy"
+                self.make_labels = self.make_labels + 1
+            
+            """
             labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
-            self.p.show_bounds(**labels)
+            self.p.show_bounds(**labels, mesh = meshcsv)
+            self.p.camera_position = "xy"""
 
             self.p.add_scalar_bar(self.colours)
 
-            self.p.camera_position = "xy"
+            #self.p.camera_position = "xy"
 
             self.p.show(interactive=True, interactive_update = True)
 
