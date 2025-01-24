@@ -29,7 +29,6 @@ file_set_full_old = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0001_0
 
 file_names = sorted([ f for f in os.listdir(Path(os.path.join(Path.cwd().parent, csv_path2)))])
 file_set_full = [Path(os.path.join(half_path, i)) for i in file_names]
-#print(file_set_full2)
 
 p = pv.Plotter(shape=(1,2))
 p.subplot(0,0)
@@ -37,44 +36,6 @@ p.add_title("Experiment View")
 p.subplot(0,1)
 p.add_title("Simulation View")
 
-def read_csv(file, subplot):
-
-    raw_data = pd.read_csv(file, header=0)
-
-    data2 = raw_data[['X[mm]', 'Y[mm]', 'Z[mm]', 'Strain-global frame: Exx', 'Strain-global frame: Eyy']]
-    points_csv = []
-
-
-    for i in range(len(raw_data['X[mm]'])):
-        pointstemp = [raw_data['X[mm]'][i], raw_data['Y[mm]'][i], raw_data['Z[mm]'][i]]
-        points_csv.append(pointstemp)
-    meshcsv = pv.PolyData(points_csv, force_float = False)
-    show_csv(meshcsv, raw_data, subplot)
-
-
-
-def show_csv(meshcsv, raw_data, subplot):
-    p.subplot(0,subplot)
-    p.show(interactive_update=True)
-    p.add_mesh(meshcsv, scalars = raw_data['Strain-global frame: Eyy'],show_scalar_bar=False) # add the data from new file to the plotter
-    labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
-    p.show_bounds(**labels)
-    p.add_scalar_bar(
-
-    'Label')
-    p.update()
-    p.show(interactive=True, interactive_update = True)
-    p.camera_position = "xy"
-    #time.sleep(5)
-
-
-def display():
-    for file in file_set_full:
-        read_csv(file, 0)
-        read_csv(file,1)
-
-
-#display()
 
 def csv_displayer(file, subploty):
 
@@ -85,7 +46,6 @@ def csv_displayer(file, subploty):
 
     p.subplot(0, subploty)
     points_csv = []
-    #raw_data = pd.read_csv(Path(os.path.join(event)), header=0)
     raw_data = pd.read_csv(file)
     data2 = raw_data[[x_coord, y_coord, z_coord, colours]]
 
@@ -108,9 +68,9 @@ def csv_displayer(file, subploty):
     p.show(interactive=True, interactive_update = True)
 
 
-def display2():
+def display():
     for file in file_set_full:
         csv_displayer(file, 0)
         csv_displayer(file,1)
 
-display2()
+display()

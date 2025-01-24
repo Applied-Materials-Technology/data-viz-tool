@@ -10,7 +10,6 @@ import os
 import random
 import time
 import pandas as pd
-import asyncio
 
 
 start_time = time.time() # get base time to start timer
@@ -47,8 +46,6 @@ class HandlerCSV(FileSystemEventHandler):
 
     @staticmethod
     def on_any_event(event):
-        
-        #print(event.src_path)
 
         displayer.subplot_decider(event.src_path)
 
@@ -58,15 +55,11 @@ class HandlerCSV(FileSystemEventHandler):
  
         elif event.event_type == 'created':
 
-            #print("Watchdog received created event - % s." % event.src_path)
-
-            pass
+            print("Watchdog received created event - % s." % event.src_path)
 
         elif event.event_type == 'modified':
 
-            #print("Watchdog received modified event - % s." % event.src_path)
-
-            pass
+            print("Watchdog received modified event - % s." % event.src_path)
 
 
             if 'csv' in event.src_path:
@@ -157,17 +150,11 @@ class Displayer():
             if self.make_labels < 2:
                 labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
                 self.p.show_bounds(**labels, mesh = meshcsv)
-                self.p.camera_position = "xy"
                 self.make_labels = self.make_labels + 1
-            
-            """
-            labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
-            self.p.show_bounds(**labels, mesh = meshcsv)
-            self.p.camera_position = "xy"""
 
             self.p.add_scalar_bar(self.colours)
 
-            #self.p.camera_position = "xy"
+            self.p.camera_position = "xy"
 
             self.p.show(interactive=True, interactive_update = True)
 
@@ -176,8 +163,7 @@ class Displayer():
             self.current_file = event
 
         else:
-            #print("WAITING FOR FILE TRANSFER....")
-            pass
+            print("WAITING FOR FILE TRANSFER....")
 
     def tiff_displayer(self, event):
         if self.current_file != event:
@@ -189,8 +175,7 @@ class Displayer():
             self.p.show(interactive=True, interactive_update = True)
             self.p.update()
         else:
-            #print("WAITING FOR FILE TRANSFER....")
-            pass
+            print("WAITING FOR FILE TRANSFER....")
 
     def set_csv_coords(self, choose_x, choose_y, choose_z, choose_c):
 
