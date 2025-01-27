@@ -16,15 +16,21 @@ start_time = time.time() # get base time to start timer
 
 class WatcherCSV:
 
-    watchDirectory = Path(os.path.join(Path.cwd().parent.parent, "inputloc"))
+    def __init__(self, watch_path: Path | None = None) -> None:
+        if watch_path is None:
+            self.watch_path = Path.cwd().parent.parent/"inputloc"
+        else:
+            self.watch_path = watch_path
 
-    def __init__(self):
         self.observer = Observer()
- 
+
+    def set_watch_path(self, watch_path: Path) -> None:
+        self.watch_path = watch_path
+
     def run(self):
 
         event_handler = HandlerCSV()
-        self.observer.schedule(event_handler, self.watchDirectory, recursive = True)
+        self.observer.schedule(event_handler, self.watch_path, recursive = True)
         self.observer.start()
 
         try:
@@ -37,7 +43,6 @@ class WatcherCSV:
         self.observer.join()
 
 
- 
 class HandlerCSV(FileSystemEventHandler):
 
     """
@@ -52,7 +57,7 @@ class HandlerCSV(FileSystemEventHandler):
         if event.is_directory:
 
             return None
- 
+
         elif event.event_type == 'created':
 
             print("Watchdog received created event - % s." % event.src_path)
@@ -74,33 +79,34 @@ class HandlerCSV(FileSystemEventHandler):
 
                 displayer.tiff_displayer(event.src_path)
 
+
 class Displayer():
     def __init__(self,
-                  p = None, 
-                  subploty: int = 1, 
-                  x_coord: str = 'coor.X [mm]', 
-                  y_coord: str = 'coor.Y [mm]', 
-                  z_coord: str = 'coor.Z [mm]', 
-                  colours: str = 'disp.Vertical Displacement V [mm]', 
+                  p = None,
+                  subploty: int = 1,
+                  x_coord: str = 'coor.X [mm]',
+                  y_coord: str = 'coor.Y [mm]',
+                  z_coord: str = 'coor.Z [mm]',
+                  field: str = 'disp.Vertical Displacement V [mm]',
                   colourmap: str = 'viridis',
-                  chunks: int = 10,
+                  colour_divs: int = 10,
                   current_file: str = "",
                   automake_plotter: bool = True,
                   make_labels: int = 0) -> None:
-        
+
         self.p = p
         self.subploty = subploty
         self.x_coord = x_coord
         self.y_coord = y_coord
         self.z_coord = z_coord
-        self.colours = colours
+        self.field = field
         self.colourmap = colourmap
-        self.chunks = chunks
+        self.colour_divs = colour_divs
         self.current_file = current_file
         self.automake_plotter = automake_plotter
         self.make_labels = make_labels
 
-        self.set_cmap(self.colourmap, self.chunks)
+        self.set_cmap(self.colourmap, self.colour_divs)
 
         if self.automake_plotter == True:
 
@@ -119,7 +125,8 @@ class Displayer():
         self.p.subplot(0,1)
         self.p.add_title("Simulation View")
 
-    def subplot_decider(self, event):
+
+    def subplot_decider(self, event: Path):
         path1 = os.path.dirname(event)
         path2 = os.path.basename(path1)
 
@@ -129,30 +136,35 @@ class Displayer():
         elif path2 == "left":
             self.subploty = 0
 
+
     def csv_displayer(self, event):
         if self.current_file != event:
 
             self.p.subplot(0, self.subploty)
             points_csv = []
             raw_data = pd.read_csv(Path(os.path.join(event)), header=0)
-            data2 = raw_data[[self.x_coord, self.y_coord, self.z_coord, self.colours]]
-
 
             for i in range(len(raw_data[self.x_coord])):
                 pointstemp = [raw_data[self.x_coord][i], raw_data[self.y_coord][i], raw_data[self.z_coord][i]]
                 points_csv.append(pointstemp)
+                
             meshcsv = pv.PolyData(points_csv, force_float = False)
+            meshcsv[self.field] = raw_data[self.field]
 
             print(time.time() - start_time)
 
-            self.p.add_mesh(meshcsv, scalars = raw_data[self.colours],show_scalar_bar=False, interpolate_before_map = False, cmap = plt.get_cmap(self.colourmap, self.chunks))
+            self.p.add_mesh(meshcsv,
+                            scalars = self.field,
+                            show_scalar_bar=False,
+                            interpolate_before_map = False,
+                            cmap = plt.get_cmap(self.colourmap, self.colour_divs))
 
             if self.make_labels < 2:
                 labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
                 self.p.show_bounds(**labels, mesh = meshcsv)
                 self.make_labels = self.make_labels + 1
 
-            self.p.add_scalar_bar(self.colours)
+            self.p.add_scalar_bar(self.field)
 
             self.p.camera_position = "xy"
 
@@ -177,7 +189,7 @@ class Displayer():
         else:
             print("WAITING FOR FILE TRANSFER....")
 
-    def set_csv_coords(self, choose_x, choose_y, choose_z, choose_c):
+    def set_csv_coords(self, choose_x, choose_y, choose_z, choose_field):
 
         """
         Set x, y, z and scalar values together
@@ -186,7 +198,7 @@ class Displayer():
         self.set_x_coord(choose_x)
         self.set_y_coord(choose_y)
         self.set_z_coord(choose_z)
-        self.set_scalar_coord(choose_c)
+        self.set_field_coord(choose_field)
 
     def set_x_coord(self, choose_x):
 
@@ -201,7 +213,7 @@ class Displayer():
         """
         Choose what value from the csv to be the y coordinate
         """
-    
+
         self.y_coord = choose_y
 
     def set_z_coord(self, choose_z):
@@ -209,30 +221,37 @@ class Displayer():
         """
         Choose what value from the csv to be the z coordinate
         """
-        
+
         self.z_coord = choose_z
 
-    def set_scalar_coord(self, choose_c):
+    def set_field_coord(self, choose_field):
 
         """
         Choose what value from the csv to be the scalar value
         """
-        
-        self.c_coord = choose_c
 
-    def set_cmap(self, colourmap, chunks):
+        self.field = choose_field
+
+    def set_cmap(self, colourmap, colour_divs):
 
         """
         Change the colour map from the selection of valid matplotlib colour maps
         """
-        
-        self.colourmap = plt.get_cmap(colourmap, chunks)
+
+        self.colourmap = plt.get_cmap(colourmap, colour_divs)
 
 
 
 if __name__ == '__main__':
-    watch = WatcherCSV()
+    watch_path = Path.home() / "data-viz-tool" / "temp_output"
+    if not watch_path.is_dir():
+        watch_path.mkdir()
+
+    watch = WatcherCSV(watch_path)
     displayer = Displayer()
-    displayer.set_csv_coords('coor.X [mm]', 'coor.Y [mm]' ,'coor.Z [mm]', 'disp.Vertical Displacement V [mm]')
+    displayer.set_csv_coords('X[mm]',
+                             'Y[mm]',
+                             'Z[mm]',
+                             'Vertical Displacement V[mm]')
     watch.run()
 

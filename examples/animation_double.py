@@ -14,20 +14,25 @@ from matplotlib.colors import ListedColormap
 
 csv_path = "data/csvs"
 csv_path2 = "data/Data_viz"
-half_path = os.path.join(Path.cwd().parent, "data/Data_viz")
-files_set1_old = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0001_0.tiff.csv")), Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0002_0.tiff.csv")),
-         Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0003_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0004_0.tiff.csv")),
-         Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0005_0.tiff.csv"))]
+
+half_path = os.path.join(Path.cwd().parent, csv_path)
+files_set1_old = [Path.cwd().parent/"data/csvs/Image_0001_0.tiff.csv",
+                  Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0002_0.tiff.csv")),
+                  Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0003_0.tiff.csv")),
+                  Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0004_0.tiff.csv")),
+                  Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0005_0.tiff.csv"))]
+
 files_set2_old = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0006_0.tiff.csv")),
          Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0007_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0008_0.tiff.csv")),
          Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0009_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0010_0.tiff.csv"))]
+
 file_set_full_old = [Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0001_0.tiff.csv")), Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0002_0.tiff.csv")),
          Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0003_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0004_0.tiff.csv")),
          Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0005_0.tiff.csv")), Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0006_0.tiff.csv")),
          Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0007_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0008_0.tiff.csv")),
          Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0009_0.tiff.csv")),Path(os.path.join(Path.cwd().parent,"data/csvs/Image_0010_0.tiff.csv"))]
 
-file_names = sorted([ f for f in os.listdir(Path(os.path.join(Path.cwd().parent, csv_path2)))])
+file_names = sorted([ f for f in os.listdir(Path(os.path.join(Path.cwd().parent, csv_path)))])
 file_set_full = [Path(os.path.join(half_path, i)) for i in file_names]
 
 p = pv.Plotter(shape=(1,2))
