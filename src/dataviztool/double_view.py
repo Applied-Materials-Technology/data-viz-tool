@@ -92,6 +92,10 @@ class Displayer():
                   colour_divs: int = 10,
                   current_file: str = "",
                   automake_plotter: bool = True,
+                  clim_option: str = 'default',
+                  clim_min: float = None,
+                  clim_max: float = None,
+                  clim = None,
                   make_labels: int = 0) -> None:
 
         self.p = p
@@ -104,9 +108,13 @@ class Displayer():
         self.colour_divs = colour_divs
         self.current_file = current_file
         self.automake_plotter = automake_plotter
+        self.clim_option = clim_option
+        self.clim = clim
         self.make_labels = make_labels
 
         self.set_cmap(self.colourmap, self.colour_divs)
+
+        self.set_clim_option(self.clim_option)
 
         if self.automake_plotter == True:
 
@@ -157,7 +165,8 @@ class Displayer():
                             scalars = self.field,
                             show_scalar_bar=False,
                             interpolate_before_map = False,
-                            cmap = plt.get_cmap(self.colourmap, self.colour_divs))
+                            cmap = plt.get_cmap(self.colourmap, self.colour_divs),
+                            clim = self.clim)
 
             if self.make_labels < 2:
                 labels = dict(ztitle='Z', xtitle='X', ytitle='Y')
@@ -240,18 +249,33 @@ class Displayer():
 
         self.colourmap = plt.get_cmap(colourmap, colour_divs)
 
+    def set_clim_option(self, clim_option):
+        if clim_option == 'default':
+            self.clim = None
+
+        if clim_option == 'contained':
+            self.clim = [1,2]
+
 
 
 if __name__ == '__main__':
+    """
     watch_path = Path.home() / "data-viz-tool" / "temp_output"
     if not watch_path.is_dir():
-        watch_path.mkdir()
+        watch_path.mkdir()"""
 
-    watch = WatcherCSV(watch_path)
+    #watch = WatcherCSV(watch_path)
+    watch = WatcherCSV(Path(os.path.join(Path.cwd().parent.parent,"inputloc")))
     displayer = Displayer()
+    """
     displayer.set_csv_coords('X[mm]',
                              'Y[mm]',
                              'Z[mm]',
-                             'Vertical Displacement V[mm]')
+                             'Vertical Displacement V[mm]')"""
+    displayer.set_csv_coords('coor.X [mm]',
+                             'coor.Y [mm]',
+                             'coor.Z [mm]',
+                             'disp.Vertical Displacement V [mm]')
+    displayer.set_clim_option('contained')
     watch.run()
 
