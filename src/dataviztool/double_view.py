@@ -14,7 +14,7 @@ import pandas as pd
 
 start_time = time.time() # get base time to start timer
 
-class WatcherCSV:
+class Watcher:
 
     def __init__(self, watch_path: Path | None = None) -> None:
         if watch_path is None:
@@ -29,7 +29,7 @@ class WatcherCSV:
 
     def run(self):
 
-        event_handler = HandlerCSV()
+        event_handler = Handler()
         self.observer.schedule(event_handler, self.watch_path, recursive = True)
         self.observer.start()
 
@@ -43,7 +43,7 @@ class WatcherCSV:
         self.observer.join()
 
 
-class HandlerCSV(FileSystemEventHandler):
+class Handler(FileSystemEventHandler):
 
     """
     Decide what to do when certain events are detected in the watchDirectory
@@ -93,8 +93,6 @@ class Displayer():
                   current_file: str = "",
                   automake_plotter: bool = True,
                   clim_option: str = 'default',
-                  clim_min: float = None,
-                  clim_max: float = None,
                   clim = None,
                   make_labels: int = 0) -> None:
 
@@ -160,6 +158,9 @@ class Displayer():
             meshcsv[self.field] = raw_data[self.field]
 
             print(time.time() - start_time)
+
+            if self.clim_option == 'percent':
+                self.clim = self.get_lims()
 
             self.p.add_mesh(meshcsv,
                             scalars = self.field,
@@ -249,12 +250,28 @@ class Displayer():
 
         self.colourmap = plt.get_cmap(colourmap, colour_divs)
 
-    def set_clim_option(self, clim_option):
+    def set_clim_option(self, clim_option, clim_min = 0, clim_max = 1):
+
+        """
+        default: min and max, variable throughout visualisation
+        contained: locked to two value defined by user (or default min = 0, max = 1)
+        """
+
         if clim_option == 'default':
+
             self.clim = None
 
         if clim_option == 'contained':
+
+            self.clim = [clim_min,clim_max]
+
+        if clim_option == 'percent':
+
             self.clim = [1,2]
+
+    def get_lims(self):
+
+        return None
 
 
 
@@ -264,8 +281,8 @@ if __name__ == '__main__':
     if not watch_path.is_dir():
         watch_path.mkdir()"""
 
-    #watch = WatcherCSV(watch_path)
-    watch = WatcherCSV(Path(os.path.join(Path.cwd().parent.parent,"inputloc")))
+    #watch = Watcher(watch_path)
+    watch = Watcher(Path(os.path.join(Path.cwd().parent.parent,"inputloc")))
     displayer = Displayer()
     """
     displayer.set_csv_coords('X[mm]',
@@ -276,6 +293,6 @@ if __name__ == '__main__':
                              'coor.Y [mm]',
                              'coor.Z [mm]',
                              'disp.Vertical Displacement V [mm]')
-    displayer.set_clim_option('contained')
+    displayer.set_clim_option('contained', 0.1, 0.2)
     watch.run()
 
