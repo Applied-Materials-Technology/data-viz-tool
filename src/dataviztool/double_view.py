@@ -94,6 +94,8 @@ class Displayer():
                   automake_plotter: bool = True,
                   clim_option: str = 'default',
                   clim = None,
+                  clim_min = None,
+                  clim_max = None,
                   make_labels: int = 0) -> None:
 
         self.p = p
@@ -108,6 +110,8 @@ class Displayer():
         self.automake_plotter = automake_plotter
         self.clim_option = clim_option
         self.clim = clim
+        self.clim_min = clim_min,
+        self.clim_max = clim_max
         self.make_labels = make_labels
 
         self.set_cmap(self.colourmap, self.colour_divs)
@@ -160,7 +164,7 @@ class Displayer():
             print(time.time() - start_time)
 
             if self.clim_option == 'percent':
-                self.clim = self.get_lims()
+                self.clim = self.get_clim(raw_data)
 
             self.p.add_mesh(meshcsv,
                             scalars = self.field,
@@ -257,21 +261,30 @@ class Displayer():
         contained: locked to two value defined by user (or default min = 0, max = 1)
         """
 
-        if clim_option == 'default':
-
-            self.clim = None
+        self.clim_option = clim_option
 
         if clim_option == 'contained':
 
             self.clim = [clim_min,clim_max]
+            self.clim_min = clim_min
+            self.clim_max = clim_max
 
-        if clim_option == 'percent':
+    def get_clim(self, csv_data):
 
-            self.clim = [1,2]
+        if self.clim_option == 'contained':
+            pass
 
-    def get_lims(self):
+        elif self.clim_option == 'default':
+            pass
 
-        return None
+        elif self.clim_option == 'percent':
+            #clim_min = min(csv_data[self.field])
+            #clim_max = max(csv_data[self.field])
+            clim_min = np.quantile(csv_data, .05)
+            clim_max = np.quantile(csv_data, .95)
+            self.clim = [clim_max, clim_min]
+
+
 
 
 
@@ -293,6 +306,7 @@ if __name__ == '__main__':
                              'coor.Y [mm]',
                              'coor.Z [mm]',
                              'disp.Vertical Displacement V [mm]')
-    displayer.set_clim_option('contained', 0.1, 0.2)
+    #displayer.set_clim_option('contained', 0.1, 0.2)
+    displayer.set_clim_option('percent')
     watch.run()
 
