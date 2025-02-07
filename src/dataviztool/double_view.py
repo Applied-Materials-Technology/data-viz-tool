@@ -79,6 +79,19 @@ class Handler(FileSystemEventHandler):
 
                 displayer.tiff_displayer(event.src_path)
 
+class CSVReader():
+    def __init__(self,
+                 x_coord: str = 'coor.X [mm]',
+                 y_coord: str = 'coor.Y [mm]',
+                 z_coord: str = 'coor.Z [mm]',
+                 field: str = 'disp.Vertical Displacement V [mm]',):
+        
+        self.x_coord = x_coord
+        self.y_coord = y_coord
+        self.z_coord = z_coord
+        self.field = field
+
+
 class Displayer():
     def __init__(self,
                   p = None,
@@ -131,25 +144,32 @@ class Displayer():
         Create the plotter if not already defined
         """
 
-        #self.p = pv.Plotter(shape=(1,3))
         self.create_plotter(1,2)
-        #self.p.subplot(0,0)
-        #self.p.add_title("Experiment View")
-        #self.p.subplot(0,1)
-        #self.p.add_title("Simulation View")
         self.assign_subplot(0,0,"Experimental View", "left")
         self.assign_subplot(0,1,"Simulation View", "right")
 
     def create_plotter(self, xsize, ysize):
 
+        """
+        Create plotter of a specified size
+        """
+
         self.p = pv.Plotter(shape=(xsize,ysize))
 
-    def assign_subplot(self, subplotx, subploty, title = "", dirname = ""):
+    def assign_subplot(self, subplotx, subploty, title = "", dirname = None):
+        
+        """
+        Add the subplots to a dictionary with the directory that it should be linked with
+        """
+
+        if dirname is None:
+            dirname = str(subplotx) + "," + str(subploty)
+            print(dirname)
 
         self.p.subplot(subplotx, subploty)
         self.p.add_title(title)
         self._subplot_dict[dirname] = [subplotx, subploty]
-        print(self._subplot_dict)
+
 
 
     def subplot_decider(self, event: Path):
@@ -163,7 +183,7 @@ class Displayer():
 
     def csv_displayer(self, event):
         if self.current_file != event:
-            
+
             self.subplot_decider(event)
             self.p.subplot(self.subplotx, self.subploty)
             points_csv = []
@@ -326,16 +346,18 @@ if __name__ == '__main__':
     #watch = Watcher(watch_path)
     watch = Watcher(Path(os.path.join(Path.cwd().parent.parent,"inputloc")))
     displayer = Displayer()
+
     """
     displayer.set_csv_coords('X[mm]',
                              'Y[mm]',
                              'Z[mm]',
                              'Vertical Displacement V[mm]')"""
+    
     displayer.set_csv_coords('coor.X [mm]',
                              'coor.Y [mm]',
                              'coor.Z [mm]',
                              'disp.Vertical Displacement V [mm]')
-    #displayer.set_clim_option('contained', 0.1, 0.2)
+
     displayer.set_clim_option('normal')
     watch.run()
 
