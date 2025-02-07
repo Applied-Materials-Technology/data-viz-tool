@@ -52,7 +52,7 @@ class Handler(FileSystemEventHandler):
     @staticmethod
     def on_any_event(event):
 
-        displayer.subplot_decider(event.src_path)
+        #displayer.subplot_decider(event.src_path)
 
         if event.is_directory:
 
@@ -79,11 +79,11 @@ class Handler(FileSystemEventHandler):
 
                 displayer.tiff_displayer(event.src_path)
 
-
 class Displayer():
     def __init__(self,
                   p = None,
                   subploty: int = 1,
+                  subplotx = 0,
                   x_coord: str = 'coor.X [mm]',
                   y_coord: str = 'coor.Y [mm]',
                   z_coord: str = 'coor.Z [mm]',
@@ -94,11 +94,12 @@ class Displayer():
                   automake_plotter: bool = True,
                   clim_option: str = 'default',
                   clim = None,
-                  clim_min = None,
-                  clim_max = None,
+                  quan_min = None,
+                  quan_max = None,
                   make_labels: int = 0) -> None:
 
         self.p = p
+        self.subplotx = subplotx
         self.subploty = subploty
         self.x_coord = x_coord
         self.y_coord = y_coord
@@ -110,9 +111,10 @@ class Displayer():
         self.automake_plotter = automake_plotter
         self.clim_option = clim_option
         self.clim = clim
-        self.clim_min = clim_min,
-        self.clim_max = clim_max
+        self.quan_min =  quan_min,
+        self.quan_max = quan_max,
         self.make_labels = make_labels
+        self._subplot_dict: dict = {}
 
         self.set_cmap(self.colourmap, self.colour_divs)
 
@@ -120,20 +122,34 @@ class Displayer():
 
         if self.automake_plotter == True:
 
-            self.create_plotter()
+            self.auto_create_plotter()
 
 
-    def create_plotter(self):
+    def auto_create_plotter(self):
 
         """
         Create the plotter if not already defined
         """
 
-        self.p = pv.Plotter(shape=(1,2))
-        self.p.subplot(0,0)
-        self.p.add_title("Experiment View")
-        self.p.subplot(0,1)
-        self.p.add_title("Simulation View")
+        #self.p = pv.Plotter(shape=(1,3))
+        self.create_plotter(1,2)
+        #self.p.subplot(0,0)
+        #self.p.add_title("Experiment View")
+        #self.p.subplot(0,1)
+        #self.p.add_title("Simulation View")
+        self.assign_subplot(0,0,"Experimental View", "left")
+        self.assign_subplot(0,1,"Simulation View", "right")
+
+    def create_plotter(self, xsize, ysize):
+
+        self.p = pv.Plotter(shape=(xsize,ysize))
+
+    def assign_subplot(self, subplotx, subploty, title = "", dirname = ""):
+
+        self.p.subplot(subplotx, subploty)
+        self.p.add_title(title)
+        self._subplot_dict[dirname] = [subplotx, subploty]
+        print(self._subplot_dict)
 
 
     def subplot_decider(self, event: Path):
@@ -141,16 +157,15 @@ class Displayer():
         path2 = os.path.basename(path1)
 
         """Change subplot for different data"""
-        if path2 == "right":
-            self.subploty = 1
-        elif path2 == "left":
-            self.subploty = 0
 
+        self.subplotx = self._subplot_dict[path2][0]
+        self.subploty = self._subplot_dict[path2][1]
 
     def csv_displayer(self, event):
         if self.current_file != event:
-
-            self.p.subplot(0, self.subploty)
+            
+            self.subplot_decider(event)
+            self.p.subplot(self.subplotx, self.subploty)
             points_csv = []
             raw_data = pd.read_csv(Path(os.path.join(event)), header=0)
 
@@ -163,8 +178,7 @@ class Displayer():
 
             print(time.time() - start_time)
 
-            if self.clim_option == 'percent':
-                self.clim = self.get_clim(raw_data)
+            self.get_clim(raw_data)
 
             self.p.add_mesh(meshcsv,
                             scalars = self.field,
@@ -254,20 +268,22 @@ class Displayer():
 
         self.colourmap = plt.get_cmap(colourmap, colour_divs)
 
-    def set_clim_option(self, clim_option, clim_min = 0, clim_max = 1):
+    def set_clim_option(self, clim_option, clim_min = 0, clim_max = 1, quan_min = .05, quan_max = .95):
 
         """
         default: min and max, variable throughout visualisation
         contained: locked to two value defined by user (or default min = 0, max = 1)
         """
 
+        self.quan_min = quan_min
+
+        self.quan_max = quan_max
+
         self.clim_option = clim_option
 
         if clim_option == 'contained':
 
             self.clim = [clim_min,clim_max]
-            self.clim_min = clim_min
-            self.clim_max = clim_max
 
     def get_clim(self, csv_data):
 
@@ -277,12 +293,25 @@ class Displayer():
         elif self.clim_option == 'default':
             pass
 
-        elif self.clim_option == 'percent':
-            #clim_min = min(csv_data[self.field])
-            #clim_max = max(csv_data[self.field])
-            clim_min = np.quantile(csv_data, .05)
-            clim_max = np.quantile(csv_data, .95)
-            self.clim = [clim_max, clim_min]
+        elif self.clim_option == 'quantile':
+
+            clim_min = np.quantile(csv_data[self.field], self.quan_min)
+            clim_max = np.quantile(csv_data[self.field], self.quan_max)
+
+            self.clim = [clim_min, clim_max]
+
+        elif self.clim_option == 'normal':
+
+            """
+            To update
+            """
+
+            sd = np.std(csv_data[self.field])
+
+            clim_min = min(csv_data[self.field]) + sd
+            clim_max = max(csv_data[self.field]) - sd
+
+            self.clim = [clim_min, clim_max]
 
 
 
@@ -307,6 +336,6 @@ if __name__ == '__main__':
                              'coor.Z [mm]',
                              'disp.Vertical Displacement V [mm]')
     #displayer.set_clim_option('contained', 0.1, 0.2)
-    displayer.set_clim_option('percent')
+    displayer.set_clim_option('normal')
     watch.run()
 
