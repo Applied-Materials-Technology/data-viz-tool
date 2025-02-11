@@ -71,25 +71,15 @@ class Handler(FileSystemEventHandler):
 
                 #For data in csv format, e.g. example csvs
 
-                displayer.csv_displayer(event.src_path)
+                displayer.display_csv(event.src_path)
 
             else:
 
                 #For reading tiff files
 
-                displayer.tiff_displayer(event.src_path)
+                displayer.display_tiff(event.src_path)
 
-class CSVReader():
-    def __init__(self,
-                 x_coord: str = 'coor.X [mm]',
-                 y_coord: str = 'coor.Y [mm]',
-                 z_coord: str = 'coor.Z [mm]',
-                 field: str = 'disp.Vertical Displacement V [mm]',):
-        
-        self.x_coord = x_coord
-        self.y_coord = y_coord
-        self.z_coord = z_coord
-        self.field = field
+
 
 
 class Displayer():
@@ -148,6 +138,7 @@ class Displayer():
         self.assign_subplot(0,0,"Experimental View", "left")
         self.assign_subplot(0,1,"Simulation View", "right")
 
+
     def create_plotter(self, xsize, ysize):
 
         """
@@ -181,24 +172,36 @@ class Displayer():
         self.subplotx = self._subplot_dict[path2][0]
         self.subploty = self._subplot_dict[path2][1]
 
-    def csv_displayer(self, event):
+    def read_csv(self,event):
+
+        """
+        Read CSV data
+        """
+
+        points_csv = []
+        raw_data = pd.read_csv(Path(os.path.join(event)), header=0)
+
+        for i in range(len(raw_data[self.x_coord])):
+            pointstemp = [raw_data[self.x_coord][i], raw_data[self.y_coord][i], raw_data[self.z_coord][i]]
+            points_csv.append(pointstemp)
+                
+        meshcsv = pv.PolyData(points_csv, force_float = False)
+        meshcsv[self.field] = raw_data[self.field]
+        self.get_clim(raw_data)
+        return meshcsv
+
+    def display_csv(self, event):
+        
+        """
+        Display read CSV data
+        """
         if self.current_file != event:
 
             self.subplot_decider(event)
             self.p.subplot(self.subplotx, self.subploty)
-            points_csv = []
-            raw_data = pd.read_csv(Path(os.path.join(event)), header=0)
-
-            for i in range(len(raw_data[self.x_coord])):
-                pointstemp = [raw_data[self.x_coord][i], raw_data[self.y_coord][i], raw_data[self.z_coord][i]]
-                points_csv.append(pointstemp)
-                
-            meshcsv = pv.PolyData(points_csv, force_float = False)
-            meshcsv[self.field] = raw_data[self.field]
+            meshcsv = self.read_csv(event)
 
             print(time.time() - start_time)
-
-            self.get_clim(raw_data)
 
             self.p.add_mesh(meshcsv,
                             scalars = self.field,
@@ -225,7 +228,7 @@ class Displayer():
         else:
             print("WAITING FOR FILE TRANSFER....")
 
-    def tiff_displayer(self, event):
+    def display_tiff(self, event):
         if self.current_file != event:
             self.p.subplot(0,self.subploty)
             g = pv.read(Path(os.path.join(event)))
