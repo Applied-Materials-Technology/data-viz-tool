@@ -10,6 +10,7 @@ import os
 import random
 import time
 import pandas as pd
+import sys
 
 
 start_time = time.time() # get base time to start timer
@@ -152,9 +153,24 @@ class Displayer():
         """
         Add the subplots to a dictionary with the directory that it should be linked with
         """
+        dirlist = os.walk(watch.watch_path)
+#        for i in dirlist:
+#            print(i[1])
+        #will probably end up too slow - only allow 0_1 folders?
+        
+        newlist = [x[1] for x in dirlist]
+        print(newlist)
+        """
+        if dirname not in dirlist:
+            make_dir = input("That directory could not be found, make directory? y/n").lower()
+            if make_dir == "n":
+                sys.exit()
+            elif make_dir == "y":
+                os.mkdir(watch.watch_path/dirname)"""
 
         if dirname is None:
-            dirname = str(subplotx) + "," + str(subploty)
+            #fix to work with the above code
+            dirname = str(subplotx) + "_" + str(subploty)
             print(dirname)
 
         self.p.subplot(subplotx, subploty)
@@ -195,6 +211,9 @@ class Displayer():
         """
         Display read CSV data
         """
+
+        #final modification event indicates file can be accessed
+        #wait until a new file has been detected to know that the final event has happened
         if self.current_file != event:
 
             self.subplot_decider(event)
