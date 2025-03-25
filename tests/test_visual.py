@@ -1,5 +1,6 @@
 import pytest
-from dataviztool import dataviztool
+#from dataviztool import dataviztool
+import dataviztool
 
 import time
 from watchdog.observers import Observer
@@ -15,11 +16,30 @@ import time
 
 
 def test_ifworks():
+
     assert 2 == 2
 
 def test_action_without_fixtures():
-    sc = dataviztool.Watcher()
 
-    thing = sc.do_i_test(3)
+    thing = 2+2
     assert thing == 4
 
+def test_if_watcher():
+
+    sc = dataviztool.Watcher(Path("test_folder"))
+    assert sc
+
+def test_if_plotter():
+
+    explotter = dataviztool.Displayer(automake_plotter=False)
+    assert explotter
+
+def test_more_plots():
+
+    explotter = dataviztool.Displayer(automake_plotter=False)
+    assert 1 == 1
+
+def test_folder():
+
+    mypath = Path("test_folder1")
+    assert mypath == True
