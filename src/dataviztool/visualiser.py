@@ -12,6 +12,8 @@ import time
 import pandas as pd
 import sys
 
+#pv.global_theme.full_screen = True
+#this breaks everything 
 
 start_time = time.time() # get base time to start timer
 
@@ -100,6 +102,7 @@ class Displayer():
                   clim = None,
                   quan_min = None,
                   quan_max = None,
+                  zoom_level: int = 1,
                   make_labels: int = 0) -> None:
 
         self.p = p
@@ -117,6 +120,7 @@ class Displayer():
         self.clim = clim
         self.quan_min =  quan_min,
         self.quan_max = quan_max,
+        self.zoom_level = zoom_level
         self.make_labels = make_labels
         self._subplot_dict: dict = {}
 
@@ -128,6 +132,110 @@ class Displayer():
 
             self.auto_create_plotter()
 
+
+    def set_csv_coords(self, choose_x, choose_y, choose_z, choose_field):
+
+        """
+        Set x, y, z and scalar values together
+        """
+
+        self.set_x_coord(choose_x)
+        self.set_y_coord(choose_y)
+        self.set_z_coord(choose_z)
+        self.set_field_coord(choose_field)
+
+    def set_x_coord(self, choose_x):
+
+        """
+        Choose what value from the csv to be the x coordinate
+        """
+
+        self.x_coord = choose_x
+
+    def set_y_coord(self, choose_y):
+
+        """
+        Choose what value from the csv to be the y coordinate
+        """
+
+        self.y_coord = choose_y
+
+    def set_z_coord(self, choose_z):
+
+        """
+        Choose what value from the csv to be the z coordinate
+        """
+
+        self.z_coord = choose_z
+
+    def set_field_coord(self, choose_field):
+
+        """
+        Choose what value from the csv to be the scalar value
+        """
+
+        self.field = choose_field
+
+    def set_cmap(self, colourmap, colour_divs):
+
+        """
+        Change the colour map from the selection of valid matplotlib colour maps
+        """
+
+        self.colourmap = plt.get_cmap(colourmap, colour_divs)
+
+    def set_clim_option(self, clim_option, clim_min = 0, clim_max = 1, quan_min = .05, quan_max = .95):
+
+        """
+        default: min and max, variable throughout visualisation
+        contained: locked to two value defined by user (or default min = 0, max = 1)
+        """
+
+        self.quan_min = quan_min
+
+        self.quan_max = quan_max
+
+        self.clim_option = clim_option
+
+        if clim_option == 'contained':
+
+            self.clim = [clim_min,clim_max]
+
+    def set_zoom_level(self, zoom_level):
+
+        """
+        Choose what zoom level to display the plots
+        """
+
+        self.zoom_level = zoom_level
+
+    def get_clim(self, csv_data):
+
+        if self.clim_option == 'contained':
+            pass
+
+        elif self.clim_option == 'default':
+            pass
+
+        elif self.clim_option == 'quantile':
+
+            clim_min = np.quantile(csv_data[self.field], self.quan_min)
+            clim_max = np.quantile(csv_data[self.field], self.quan_max)
+
+            self.clim = [clim_min, clim_max]
+
+        elif self.clim_option == 'normal':
+
+            """
+            To update
+            """
+
+            sd = np.std(csv_data[self.field])
+
+            clim_min = min(csv_data[self.field]) + sd
+            clim_max = max(csv_data[self.field]) - sd
+
+            self.clim = [clim_min, clim_max]
 
     def auto_create_plotter(self):
 
@@ -237,6 +345,7 @@ class Displayer():
             self.p.add_scalar_bar(self.field)
 
             self.p.camera_position = "xy"
+            self.p.zoom_camera(self.zoom_level)
 
             self.p.show(interactive=True, interactive_update = True)
 
@@ -259,127 +368,14 @@ class Displayer():
         else:
             print("WAITING FOR FILE TRANSFER....")
 
-    def set_csv_coords(self, choose_x, choose_y, choose_z, choose_field):
 
-        """
-        Set x, y, z and scalar values together
-        """
+class Visualiser():
+    def __init__(self,
+                  watcher = Watcher(Path(os.path.join(Path.cwd().parent.parent,"inputloc"))),
+                  displayer= Displayer(automake_plotter=False)):
+        
+        self.watcher = watcher
+        self.displayer = displayer
 
-        self.set_x_coord(choose_x)
-        self.set_y_coord(choose_y)
-        self.set_z_coord(choose_z)
-        self.set_field_coord(choose_field)
-
-    def set_x_coord(self, choose_x):
-
-        """
-        Choose what value from the csv to be the x coordinate
-        """
-
-        self.x_coord = choose_x
-
-    def set_y_coord(self, choose_y):
-
-        """
-        Choose what value from the csv to be the y coordinate
-        """
-
-        self.y_coord = choose_y
-
-    def set_z_coord(self, choose_z):
-
-        """
-        Choose what value from the csv to be the z coordinate
-        """
-
-        self.z_coord = choose_z
-
-    def set_field_coord(self, choose_field):
-
-        """
-        Choose what value from the csv to be the scalar value
-        """
-
-        self.field = choose_field
-
-    def set_cmap(self, colourmap, colour_divs):
-
-        """
-        Change the colour map from the selection of valid matplotlib colour maps
-        """
-
-        self.colourmap = plt.get_cmap(colourmap, colour_divs)
-
-    def set_clim_option(self, clim_option, clim_min = 0, clim_max = 1, quan_min = .05, quan_max = .95):
-
-        """
-        default: min and max, variable throughout visualisation
-        contained: locked to two value defined by user (or default min = 0, max = 1)
-        """
-
-        self.quan_min = quan_min
-
-        self.quan_max = quan_max
-
-        self.clim_option = clim_option
-
-        if clim_option == 'contained':
-
-            self.clim = [clim_min,clim_max]
-
-    def get_clim(self, csv_data):
-
-        if self.clim_option == 'contained':
-            pass
-
-        elif self.clim_option == 'default':
-            pass
-
-        elif self.clim_option == 'quantile':
-
-            clim_min = np.quantile(csv_data[self.field], self.quan_min)
-            clim_max = np.quantile(csv_data[self.field], self.quan_max)
-
-            self.clim = [clim_min, clim_max]
-
-        elif self.clim_option == 'normal':
-
-            """
-            To update
-            """
-
-            sd = np.std(csv_data[self.field])
-
-            clim_min = min(csv_data[self.field]) + sd
-            clim_max = max(csv_data[self.field]) - sd
-
-            self.clim = [clim_min, clim_max]
-
-
-
-
-
-if __name__ == '__main__':
-    """
-    watch_path = Path.home() / "data-viz-tool" / "temp_output"
-    if not watch_path.is_dir():
-        watch_path.mkdir()"""
-
-    #watch = Watcher(watch_path)
-    watch = Watcher(Path(os.path.join(Path.cwd().parent.parent,"inputloc")))
-    displayer = Displayer()
-
-    """
-    displayer.set_csv_coords('X[mm]',
-                             'Y[mm]',
-                             'Z[mm]',
-                             'Vertical Displacement V[mm]')"""
-    
-    displayer.set_csv_coords('coor.X [mm]',
-                             'coor.Y [mm]',
-                             'coor.Z [mm]',
-                             'disp.Vertical Displacement V [mm]')
-
-    displayer.set_clim_option('normal')
-    watch.run()
-
+    def show_me(self):
+        print(self.displayer.p)

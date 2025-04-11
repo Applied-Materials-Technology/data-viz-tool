@@ -19,6 +19,10 @@ start_time = time.time() # get base time to start timer
 
 class Watcher:
 
+    """
+    Watches the specified directory for new files
+    """
+
     def __init__(self, watch_path: Path | None = None) -> None:
         if watch_path is None:
             self.watch_path = Path.cwd().parent.parent/"inputloc"
@@ -86,6 +90,10 @@ class Handler(FileSystemEventHandler):
 
 
 class Displayer():
+
+    """
+    Class that handles the display options for the visualiser
+    """
     def __init__(self,
                   p = None,
                   subploty: int = 1,
