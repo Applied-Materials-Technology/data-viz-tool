@@ -11,7 +11,7 @@ import random
 import time
 import pandas as pd
 import sys
-from displayer import *
+from display_tools import display_csv, display_tiff
 
 #pv.global_theme.full_screen = True
 #this breaks everything 
@@ -39,8 +39,7 @@ class Watcher:
 
     def run(self):
 
-        event_handler = Handler()
-        event_handler.set_displayer(self.displayer)
+        event_handler = Handler(self.displayer)
         self.observer.schedule(event_handler, self.watch_path, recursive = True)
         self.observer.start()
 
@@ -60,16 +59,16 @@ class Handler(FileSystemEventHandler):
     Decide what to do when certain events are detected in the watchDirectory
     """
 
-    @staticmethod
-    def on_any_event(event):
+    def __init__(self, displayer): 
+        self.displayer = displayer
 
-        #displayer.subplot_decider(event.src_path)
+    def on_any_event(self,event):
 
         if event.is_directory:
 
             return None
 
-        elif event.event_type == 'created':
+        if event.event_type == 'created':
 
             print("Watchdog received created event - % s." % event.src_path)
 
@@ -82,26 +81,11 @@ class Handler(FileSystemEventHandler):
 
                 #For data in csv format, e.g. example csvs
 
-                display_csv(watcher.displayer, event.src_path)
+                display_csv(self.displayer, event.src_path)
 
             else:
 
                 #For reading tiff files
 
-                display_tiff(watcher.displayer, event.src_path)
+                display_tiff(self.displayer, event.src_path)
 
-
-"""
-class MyEventHandler(PatternMatchingEventHandler):
-    def hook(self, thing):
-        self.thing = thing
-    def on_modified(self, event):
-        super(MyEventHandler, self).on_modified(event)
-        logging.info("File %s was just modified" % event.src_path)
-        self.thing.readConfigFile()  #<- i want to call this method in class Configuration
-
-class MainClass:
-    def __init__(self):
-        self.conf = Configuration()
-        event_handler = MyEventHandler(patterns=patterns)
-        event_handler.hook(self.conf)"""
