@@ -29,6 +29,8 @@ class Watcher:
         else:
             self.watch_path = watch_path
 
+
+        self.displayer = Displayer(automake_plotter=False)
         self.observer = Observer()
 
     def set_watch_path(self, watch_path: Path) -> None:

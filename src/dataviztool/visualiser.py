@@ -370,12 +370,40 @@ class Displayer():
 
 
 class Visualiser():
-    def __init__(self,
-                  watcher = Watcher(Path(os.path.join(Path.cwd().parent.parent,"inputloc"))),
-                  displayer= Displayer(automake_plotter=False)):
+    def __init__(self):
         
-        self.watcher = watcher
-        self.displayer = displayer
+        self.watcher = Watcher(Path(os.path.join(Path.cwd().parent.parent,"inputloc")))
+        self.displayer = Displayer(automake_plotter=False)
 
     def show_me(self):
         print(self.displayer.p)
+
+    def show_path(self):
+        print(self.watcher.watch_path)
+
+    def assign_subplot2(self, subplotx, subploty, title = "", dirname = None):
+        
+        """
+        Add the subplots to a dictionary with the directory that it should be linked with
+        """
+        dirlist = os.walk(self.watcher.watch_path)
+
+        
+        newlist = [x[1] for x in dirlist]
+        print(newlist)
+        """
+        if dirname not in dirlist:
+            make_dir = input("That directory could not be found, make directory? y/n").lower()
+            if make_dir == "n":
+                sys.exit()
+            elif make_dir == "y":
+                os.mkdir(watch.watch_path/dirname)"""
+
+        if dirname is None:
+            #fix to work with the above code
+            dirname = str(self.displayer.subplotx) + "_" + str(self.displayer.subploty)
+            print(dirname)
+
+        self.displayer.p.subplot(self.displayer.subplotx, self.displayer.subploty)
+        self.displayer.p.add_title(title)
+        self.displayer._subplot_dict[dirname] = [self.displayer.subplotx, self.displayer.subploty]
