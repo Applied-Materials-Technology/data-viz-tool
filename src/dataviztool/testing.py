@@ -5,6 +5,8 @@ from display_tools import *
 from display_options import Displayer
 from watcher import Watcher
 
+#Adapt code to make this better for users 
+
 my_displayer = Displayer(watch_path = Path(os.path.join(Path.cwd().parent.parent,"inputloc")))
 my_watcher = Watcher(displayer = my_displayer)
 print(my_watcher.displayer)
