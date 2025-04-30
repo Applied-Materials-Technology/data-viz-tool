@@ -140,7 +140,7 @@ class Displayer():
         Choose what zoom level to display the plots
         """
 
-        self.zoom_level = zoom_level
+        self.zoom_level = float(zoom_level)
 
     def get_clim(self, csv_data):
 
