@@ -11,7 +11,7 @@ import random
 import time
 import pandas as pd
 import sys
-from display_tools import display_csv, display_tiff
+from dataviztool.display_tools import display_csv, display_tiff
 
 #pv.global_theme.full_screen = True
 #this breaks everything 

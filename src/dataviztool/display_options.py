@@ -5,8 +5,8 @@ import os
 from pathlib import Path
 import time
 import pandas as pd
-from watcher import Watcher
-from display_tools import auto_create_plotter
+from dataviztool.watcher import Watcher
+from dataviztool.display_tools import auto_create_plotter
 
 start_time = time.time()
 

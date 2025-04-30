@@ -39,7 +39,17 @@ def test_more_plots():
     explotter = dataviztool.Displayer(automake_plotter=False)
     assert 1 == 1
 
-def test_folder():
+def test_folder_name():
 
     mypath = Path("test_folder1")
-    assert mypath == True
+    assert mypath == Path("test_folder1")
+
+def test_y_coord():
+    explotter = dataviztool.Displayer(automake_plotter=False)
+    explotter.set_y_coord("myycoord")
+    assert explotter.y_coord == "myycoord"
+
+def test_y_coord2():
+    explotter = dataviztool.Displayer(automake_plotter=False)
+    explotter.set_y_coord("myycoord")
+    assert type(explotter.y_coord) == str
