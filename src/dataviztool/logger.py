@@ -1,23 +1,24 @@
 import logging
 import sys
 
-
 logger = logging.getLogger(__name__)
-#logging.basicConfig(level=logging.INFO)
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
 
-stdout = logging.StreamHandler(stream=sys.stdout)
+file_handler = logging.FileHandler('logs.log')
+file_handler.setLevel(logging.DEBUG)
 
-fmt = logging.Formatter("%(name)s: %(asctime)s | %(levelname)s | %(filename)s:%(lineno)s | %(process)d >>> %(message)s")
+stdout_handler = logging.StreamHandler()
+stdout_handler.setLevel(logging.DEBUG)
 
-stdout.setFormatter(fmt)
+formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
 
-#stdout.setLevel(logging.INFO)
-
-logger.addHandler(stdout)
-logger.setLevel(logging.INFO)
+stdout_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
 
 logger.debug('debug message')
 logger.info('info message')
 logger.warning('warn message')
 logger.error('error message')
 logger.critical('critical message')
+
