@@ -25,13 +25,15 @@ class Watcher:
     """
 
     def __init__(self, displayer, watch_path: Path | None = None) -> None:
+        """
         if watch_path is None:
             self.watch_path = Path.cwd().parent.parent/"inputloc"
         else:
-            self.watch_path = watch_path
+            self.watch_path = watch_path"""
 
 
         self.displayer = displayer
+        self.watch_path = self.displayer.watch_path
         self.observer = Observer()
 
     def set_watch_path(self, watch_path: Path) -> None:
@@ -40,6 +42,7 @@ class Watcher:
     def run(self):
 
         event_handler = Handler(self.displayer)
+        self.watch_path = self.displayer.watch_path
         self.observer.schedule(event_handler, self.watch_path, recursive = True)
         self.observer.start()
 
