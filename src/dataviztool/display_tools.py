@@ -127,7 +127,7 @@ def display_csv(displayer,event):
     #final modification event indicates file can be accessed
     #wait until a new file has been detected to know that the final event has happened
     if displayer.current_file != event:
-
+        #print(event)
         subplot_decider(displayer, event)
         displayer.p.subplot(displayer.subplotx, displayer.subploty)
         meshcsv = read_csv(displayer, event)
