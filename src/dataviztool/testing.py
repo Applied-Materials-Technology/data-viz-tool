@@ -9,6 +9,7 @@ from watcher import Watcher
 
 
 my_displayer = Displayer(watch_path = Path(os.path.join(Path.cwd().parent.parent,"inputloc")))
+print(type(my_displayer.p))
 my_watcher = Watcher(displayer = my_displayer)
 print(my_watcher.displayer)
 my_watcher.run()

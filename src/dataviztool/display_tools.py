@@ -1,3 +1,8 @@
+"""
+Creates plotter, configures subplots, and plots the data for a displayer
+"""
+
+
 import pyvista as pv
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,7 +11,6 @@ from pathlib import Path
 import time
 import pandas as pd
 
-start_time = time.time()
 
 def auto_create_plotter(displayer):
 
@@ -14,8 +18,11 @@ def auto_create_plotter(displayer):
     Create the plotter if not already defined
 
 
-    Parameters:
-        displayer: The displayer to create a plotter and subplots for.
+    Parameters
+    ----------
+
+    displayer: display_options.Displayer
+        The displayer to create a plotter and subplots for.
     """
 
     create_plotter(displayer,1,2)
@@ -23,30 +30,55 @@ def auto_create_plotter(displayer):
     assign_subplot(displayer, 0,1,"Simulation View", "right")
 
 
-def create_plotter(displayer, xsize, ysize):
+def create_plotter(displayer, 
+                   xsize: int, 
+                   ysize: int):
 
     """
     Create plotter of a specified size
 
-    Parameters:
-        displayer: The displayer to create a plotter and subplots for.
-        xsize (int): the number sub-render windows to make inside of the main window horizontally
-        ysize (int): the number sub-render windows to make inside of the main window vertically
+    Parameters
+    ----------
+
+        displayer : display_options.Displayer
+            The displayer to create a plotter and subplots for.
+        xsize : (int)
+            the number sub-render windows to make inside of the main window horizontally
+        ysize : (int)
+            the number sub-render windows to make inside of the main window vertically
+
+    Returns
+    -------
+
+        displayer.p : pyvista.plotting.plotter.Plotter
+            The plotter associated with the Displayer object displayer
     """
 
     displayer.p = pv.Plotter(shape=(xsize,ysize))
+    return displayer.p
 
-def assign_subplot(displayer, subplotx, subploty, title = "", dirname = None):
+def assign_subplot(displayer, 
+                   subplotx: int, 
+                   subploty: int, 
+                   title: str = "", 
+                   dirname: Path = None):
         
         """
         Add the subplots to a dictionary with the directory that it should be linked with
 
-        Parameters:
-            displayer: The displayer object to reference
-            subplotx (int): the number of the sub-render window to reference inside of the main window horizontally
-            subploty (int): the number sub-render window to reference inside of the main window vertically
-            title (str): the text that should be displayed in the subplot references by subplotx,subploty
-            dirname (path): path to the directory that will contain the data that will be displayed by the referenced subplot
+        Parameters
+        ----------
+
+            displayer : display_options.Displayer
+                The displayer object to reference
+            subplotx : (int)
+                the number of the sub-render window to reference inside of the main window horizontally
+            subploty : (int) 
+                the number sub-render window to reference inside of the main window vertically
+            title : (str) 
+                the text that should be displayed in the subplot references by subplotx,subploty
+            dirname : (path)
+                path to the directory that will contain the data that will be displayed by the referenced subplot
         """
         dirlist = os.walk(displayer.watch_path)
 #        for i in dirlist:
@@ -74,15 +106,20 @@ def assign_subplot(displayer, subplotx, subploty, title = "", dirname = None):
 
 
 
-def subplot_decider(displayer, event: Path):
+def subplot_decider(displayer, 
+                    event: Path):
 
     """
     Change subplot for different data
     
-    Parameters:
-        displayer: The displayer object to reference.
-        xsize (int): the number sub-render windows inside of the main window horizontally
-        ysize (int): the number sub-render windows inside of the main window vertically
+    Parameters
+    ----------
+        displayer : display_options.Displayer
+            The displayer object to reference.
+        xsize : (int)
+            the number sub-render windows inside of the main window horizontally
+        ysize : (int)
+            the number sub-render windows inside of the main window vertically
     """
 
     path1 = os.path.dirname(event)
@@ -91,14 +128,18 @@ def subplot_decider(displayer, event: Path):
     displayer.subplotx = displayer._subplot_dict[path2][0]
     displayer.subploty = displayer._subplot_dict[path2][1]
 
-def read_csv(displayer,event):
+def read_csv(displayer,
+             event: Path):
 
     """
     Read CSV data
     
     Parameters:
-        displayer: The displayer object to reference.
-        event: the path to the file of the event detected by watchdog watcher
+    ----------
+        displayer : display_options.Displayer
+            The displayer object to reference.
+        event : path
+            the path to the file of the event detected by watchdog watcher
     """
 
     points_csv = []
@@ -114,25 +155,30 @@ def read_csv(displayer,event):
     return meshcsv
 
 
-def display_csv(displayer,event):
+def display_csv(displayer,
+                event: Path):
     
     """
     Display read CSV data
 
-    Parameters:
-        displayer: The displayer object to reference.
-        event: the path to the file of the event detected by watchdog watcher
+    Parameters
+    ----------
+        displayer : display_options.Displayer
+            The displayer object to reference.
+        event : path
+            the path to the file of the event detected by watchdog watcher
     """
 
-    #final modification event indicates file can be accessed
-    #wait until a new file has been detected to know that the final event has happened
+
+    """
+    final modification event indicates file can be accessed
+    wait until a new file has been detected to know that the final event has happened
+    """
+
     if displayer.current_file != event:
-        #print(event)
         subplot_decider(displayer, event)
         displayer.p.subplot(displayer.subplotx, displayer.subploty)
         meshcsv = read_csv(displayer, event)
-
-        print(time.time() - start_time)
 
         displayer.p.add_mesh(meshcsv,
                         scalars = displayer.field,
@@ -160,20 +206,21 @@ def display_csv(displayer,event):
     else:
         print("WAITING FOR FILE TRANSFER....")
 
-def display_tiff(displayer, event):
+def display_tiff(displayer, 
+                 event: Path):
 
     """
-    Display data from tiff files
-
-    Parameters:
-        displayer: The displayer object to reference.
-        event: the path to the file of the event detected by watchdog watcher
+    Parameters
+    ----------
+        displayer : display_options.Displayer
+            The displayer object to reference.
+        event : path
+            the path to the file of the event detected by watchdog watcher
     """
 
     if displayer.current_file != event:
         displayer.p.subplot(0,displayer.subploty)
         g = pv.read(Path(os.path.join(event)))
-        print(time.time() - start_time)
         displayer.p.camera_position = "xy"
         displayer.p.add_mesh(g, opacity=0.5, name='data', cmap='gist_ncar') # add the data from new file to the plotter
         displayer.p.show(interactive=True, interactive_update = True)

@@ -18,7 +18,7 @@ class Displayer():
     def __init__(self,
                   p = None,
                   subploty: int = 1,
-                  subplotx = 0,
+                  subplotx: int = 0,
                   x_coord: str = 'coor.X [mm]',
                   y_coord: str = 'coor.Y [mm]',
                   z_coord: str = 'coor.Z [mm]',
@@ -66,10 +66,26 @@ class Displayer():
         watcher = Watcher(self, watch_path=self.watch_path)
 
 
-    def set_csv_coords(self, choose_x, choose_y, choose_z, choose_field):
+    def set_csv_coords(self, 
+                       choose_x: str, 
+                       choose_y: str, 
+                       choose_z: str, 
+                       choose_field: str):
 
         """
         Set x, y, z and scalar values together
+
+        Parameters
+        ----------
+
+            choose_x : str
+                What should be set to be read as the x coordinate.
+            choose_y : str
+                What should be set to be read as the y coordinate.
+            choose_z : str
+                What should be set to be read as the z coordinate.
+            choose_field : str
+                What should be chosen to be read as the scalar field.
         """
 
         self.set_x_coord(choose_x)
@@ -77,51 +93,108 @@ class Displayer():
         self.set_z_coord(choose_z)
         self.set_field_coord(choose_field)
 
-    def set_x_coord(self, choose_x):
+    def set_x_coord(self, 
+                    choose_x: str):
 
         """
         Choose what value from the csv to be the x coordinate
+
+        Parameters
+        ----------
+
+            choose_x : str
+                What should be set to be read as the x coordinate.
         """
 
         self.x_coord = choose_x
 
-    def set_y_coord(self, choose_y):
+    def set_y_coord(self, 
+                    choose_y: str):
 
         """
         Choose what value from the csv to be the y coordinate
+
+        Parameters
+        ----------
+
+            choose_y : str
+                What should be set to be read as the y coordinate.
         """
 
         self.y_coord = choose_y
 
-    def set_z_coord(self, choose_z):
+    def set_z_coord(self, 
+                    choose_z: str):
 
         """
         Choose what value from the csv to be the z coordinate
+
+        Parameters
+        ----------
+
+            choose_z : str
+                What should be set to be read as the z coordinate.
         """
 
         self.z_coord = choose_z
 
-    def set_field_coord(self, choose_field):
+    def set_field_coord(self, 
+                        choose_field: str):
 
         """
         Choose what value from the csv to be the scalar value
+
+        Parameters
+        ----------
+
+            choose_field : str
+                What should be set to be read as the scalar value.
         """
 
         self.field = choose_field
 
-    def set_cmap(self, colourmap, colour_divs):
+    def set_cmap(self, 
+                 colourmap: str, 
+                 colour_divs: int):
 
         """
         Change the colour map from the selection of valid matplotlib colour maps
+
+        Parameters
+        ----------
+
+            colourmap : str
+                Colour map from selection of valid matplotlib colour maps.
+            colour_divs : str
+                plt.get_cmap luv.
         """
 
         self.colourmap = plt.get_cmap(colourmap, colour_divs)
 
-    def set_clim_option(self, clim_option, clim_min = 0, clim_max = 1, quan_min = .05, quan_max = .95):
+    def set_clim_option(self, 
+                        clim_option: str, 
+                        clim_min: int = 0, 
+                        clim_max: int = 1, 
+                        quan_min: float = .05, 
+                        quan_max: float = .95):
 
         """
         default: min and max, variable throughout visualisation
         contained: locked to two value defined by user (or default min = 0, max = 1)
+
+        Parameters
+        ----------
+
+            clim_options : str
+                Method of controlling the range of the colour bar 
+            clim_min : int
+                Min value for colourbar
+            clim_max : int
+                Max value for colourbar
+            quan_min : float
+                Min quantile %
+            quan_max : float
+                Max quantile %
         """
 
         self.quan_min = quan_min
@@ -134,15 +207,23 @@ class Displayer():
 
             self.clim = [clim_min,clim_max]
 
-    def set_zoom_level(self, zoom_level):
+    def set_zoom_level(self, 
+                       zoom_level: float):
 
         """
         Choose what zoom level to display the plots
+
+        Parameters
+        ----------
+
+            zoom_level : float
+                Set the zoom level in the plotter
         """
 
         self.zoom_level = float(zoom_level)
 
-    def get_clim(self, csv_data):
+    def get_clim(self, 
+                 csv_data):
 
         if self.clim_option == 'contained':
             pass
