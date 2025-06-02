@@ -15,5 +15,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Get pytest
         run: pip3 install pytest
+      - name: Get package
+        run: pip3 install -e .
       - name: Test
         run: pytest -v tests/.
