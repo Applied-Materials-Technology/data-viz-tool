@@ -19,7 +19,9 @@ author = 'Megan Sampson'
 
 extensions = ['sphinx.ext.duration',
               'sphinx.ext.doctest',
-              'sphinx.ext.autodoc',]
+              'sphinx.ext.autodoc',
+              'sphinx.ext.autosummary',
+              'sphinx.ext.doctest',]
 
 templates_path = ['_templates']
 exclude_patterns = []
