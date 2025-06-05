@@ -12,11 +12,11 @@ Docs for the future
    :maxdepth: 2
    :caption: Contents:
 
-""""
-.. automodule:: dataviztool.display_options
+
+.. automodule:: dataviztool
     :members:
     :imported-members:
-""""
+
 
 Indices and tables
 ==================
