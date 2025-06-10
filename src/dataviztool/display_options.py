@@ -15,6 +15,27 @@ class Displayer():
     """
     Class that handles the display options for the visualiser
     """
+
+    __slots__ =("p",
+                "subploty",
+                "subplotx",
+                "x_coord",
+                "y_coord",
+                "z_coord",
+                "field",
+                "colourmap",
+                "colour_divs",
+                "current_file",
+                "automake_plotter",
+                "clim_option",
+                "clim",
+                "quan_min",
+                "quan_max",
+                "zoom_level",
+                "watch_path",
+                "make_labels",
+                "_subplot_dict")
+
     def __init__(self,
                   p = None,
                   subploty: int = 1,
@@ -34,7 +55,7 @@ class Displayer():
                   zoom_level: int = 1,
                   watch_path = None,
                   make_labels: int = 0) -> None:
-
+        
         self.p = p
         self.subplotx = subplotx
         self.subploty = subploty
