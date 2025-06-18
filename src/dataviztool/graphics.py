@@ -1,8 +1,8 @@
 import pyvista as pv
 import pyvistaqt as pvqt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
-
-
+from ex_logger import *
+"""
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -22,8 +22,10 @@ class MainWindow(QMainWindow):
         self.plotter.add_mesh(pv.Sphere())
         self.plotter.show_grid()
 
-
 app = QApplication([])
 window = MainWindow()
 window.show()
-app.exec_()
+app.exec_()"""
+
+
+logger.debug('This is a debug message')
