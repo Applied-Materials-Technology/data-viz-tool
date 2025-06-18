@@ -7,6 +7,7 @@ import time
 import pandas as pd
 from dataviztool.watcher import Watcher
 from dataviztool.display_tools import auto_create_plotter
+from displayopts import DisplayOpts
 
 start_time = time.time()
 
@@ -75,6 +76,7 @@ class Displayer():
         self.watch_path = watch_path
         self.make_labels = make_labels
         self._subplot_dict: dict = {}
+
 
         self.set_cmap(self.colourmap, self.colour_divs)
 
