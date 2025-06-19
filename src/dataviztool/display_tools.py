@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 import time
 import pandas as pd
-
+#from logger import logger
 
 def auto_create_plotter(displayer):
 
@@ -227,3 +227,4 @@ def display_tiff(displayer,
         displayer.p.update()
     else:
         print("WAITING FOR FILE TRANSFER....")
+        logger.info()

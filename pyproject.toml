@@ -27,6 +27,9 @@ dependencies = [
   "watchdog>=4.0.1",
 ]
 
+[project.scripts]
+my-client = "dataviztool.cli:app"
+
 [project.urls]
 "Repository" = "https://github.com/Applied-Materials-Technology/data-viz-tool"
 "Issue Tracker" = "https://github.com/Applied-Materials-Technology/data-viz-tool/issues"
