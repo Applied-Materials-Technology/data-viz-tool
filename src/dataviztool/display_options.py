@@ -7,7 +7,7 @@ import time
 import pandas as pd
 from dataviztool.watcher import Watcher
 from dataviztool.display_tools import auto_create_plotter
-from displayopts import DisplayOpts
+#from logger import logger
 
 start_time = time.time()
 
@@ -88,6 +88,9 @@ class Displayer():
 
         watcher = Watcher(self, watch_path=self.watch_path)
 
+    def echo_thing(self):
+        #logger.info('hello from echo thing')
+        pass
 
     def set_csv_coords(self, 
                        choose_x: str, 

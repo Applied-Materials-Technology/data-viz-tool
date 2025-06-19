@@ -5,3 +5,4 @@ from dataviztool.main_csv import *
 from dataviztool.watcher import *
 from dataviztool.display_tools import *
 from dataviztool.display_options import *
+from dataviztool.cli import *
