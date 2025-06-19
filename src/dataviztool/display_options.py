@@ -7,7 +7,6 @@ import time
 import pandas as pd
 from dataviztool.watcher import Watcher
 from dataviztool.display_tools import auto_create_plotter
-from displayopts import DisplayOpts
 
 start_time = time.time()
 
