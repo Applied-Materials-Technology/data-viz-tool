@@ -227,4 +227,4 @@ def display_tiff(displayer,
         displayer.p.update()
     else:
         print("WAITING FOR FILE TRANSFER....")
-        logger.info()
+        #logger.info()
