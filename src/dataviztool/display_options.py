@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import time
 import pandas as pd
+import json
 from dataviztool.watcher import Watcher
 from dataviztool.display_tools import auto_create_plotter
 #from logger import logger
@@ -16,7 +17,7 @@ class Displayer():
     """
     Class that handles the display options for the visualiser
     """
-
+    """
     __slots__ =("p",
                 "subploty",
                 "subplotx",
@@ -35,7 +36,7 @@ class Displayer():
                 "zoom_level",
                 "watch_path",
                 "make_labels",
-                "_subplot_dict")
+                "_subplot_dict")"""
 
     def __init__(self,
                   p = None,
@@ -277,8 +278,10 @@ class Displayer():
 
             self.clim = [clim_min, clim_max]
 
-    def findme(self, displayer):
-        print(displayer)
+    def test_display(self):
+        self.p.show()
+        
+        
 
 
 
