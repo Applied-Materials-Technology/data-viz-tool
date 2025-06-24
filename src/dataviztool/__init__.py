@@ -6,4 +6,4 @@ from dataviztool.watcher import *
 from dataviztool.display_tools import *
 from dataviztool.display_options import *
 from dataviztool.cli import *
-from displayopts import DisplayerOpts
+from dataviztool.displayopts import DisplayerOpts
