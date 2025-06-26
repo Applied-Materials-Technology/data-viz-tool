@@ -22,6 +22,8 @@ class Displayer():
         self.p = p
         self.display_opts = display_opts
 
+        self.display_opts.watch_path = Path(os.path.join(Path.cwd().parent.parent,"inputloc"))
+
         if self.display_opts.automake_plotter == True:
             self.auto_create_plotter()
 

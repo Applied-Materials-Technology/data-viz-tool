@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import os
 from display_tools import *
@@ -15,4 +14,3 @@ print(type(my_displayer.p))
 my_watcher = Watcher(displayer = my_displayer)
 print(my_watcher.displayer)
 my_watcher.run()
-
