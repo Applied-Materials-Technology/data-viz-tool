@@ -16,9 +16,10 @@ def repeat(repeat: str):
 def getpath(mypath: Path):
     print(mypath)
 
+"""
 @app.command()
 def getpath(mydisplay: dict):
-    print(mydisplay)
+    print(mydisplay)"""
 
 if __name__ == "__main__":
     app()
