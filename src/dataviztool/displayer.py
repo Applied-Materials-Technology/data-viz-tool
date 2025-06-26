@@ -18,13 +18,16 @@ class Displayer():
 
     def __init__(self,
                 p = None,
+                auto_make_plotter = True,
                 display_opts = DisplayerOpts()) -> None:
+        
         self.p = p
+        self.auto_make_plotter = auto_make_plotter
         self.display_opts = display_opts
 
         self.display_opts.watch_path = Path(os.path.join(Path.cwd().parent.parent,"inputloc"))
 
-        if self.display_opts.automake_plotter == True:
+        if self.auto_make_plotter == True:
             self.auto_create_plotter()
 
     def auto_create_plotter(self):
@@ -243,3 +246,7 @@ class Displayer():
         else:
             print("WAITING FOR FILE TRANSFER....")
             #logger.info()
+
+    
+    def test_display(self):
+        self.p.show()

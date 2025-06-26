@@ -34,7 +34,6 @@ class DisplayerOpts():
                 "colourmap",
                 "colour_divs",
                 "current_file",
-                "automake_plotter",
                 "clim_option",
                 "clim",
                 "quan_min",
@@ -74,7 +73,6 @@ class DisplayerOpts():
         self.colourmap = colourmap
         self.colour_divs = colour_divs
         self.current_file = current_file
-        self.automake_plotter = automake_plotter
         self.clim_option = clim_option
         self.clim = clim
         self.quan_min =  quan_min,
@@ -84,16 +82,15 @@ class DisplayerOpts():
         self.make_labels = make_labels
         self._subplot_dict: dict = {}
 
+        self.watch_path = Path(os.path.join(Path.cwd().parent.parent,"inputloc"))
+
+        watcher = Watcher(self, watch_path=self.watch_path)
+
 
         self.set_cmap(self.colourmap, self.colour_divs)
 
         self.set_clim_option(self.clim_option)
 
-        if self.automake_plotter == True:
-
-            auto_create_plotter(self)
-
-        watcher = Watcher(self, watch_path=self.watch_path)
 
     def echo_thing(self):
         #logger.info('hello from echo thing')
