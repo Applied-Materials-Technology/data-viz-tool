@@ -18,16 +18,16 @@ class Displayer():
 
     def __init__(self,
                 p = None,
-                auto_make_plotter = True,
+                automake_plotter = True,
                 display_opts = DisplayerOpts()) -> None:
         
         self.p = p
-        self.auto_make_plotter = auto_make_plotter
+        self.automake_plotter = automake_plotter
         self.display_opts = display_opts
 
         self.display_opts.watch_path = Path(os.path.join(Path.cwd().parent.parent,"inputloc"))
 
-        if self.auto_make_plotter == True:
+        if self.automake_plotter == True:
             self.auto_create_plotter()
 
     def auto_create_plotter(self):
