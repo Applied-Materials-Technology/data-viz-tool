@@ -252,6 +252,20 @@ class DisplayerOpts():
 
         self.zoom_level = float(zoom_level)
 
+    def set_watch_path(self, watch_path):
+
+        """
+        Choose the path that will be watched for incoming files to be displayed
+
+        Parameters
+        ----------
+
+            watch_path : Path
+                The path that will be watched for incoming files to be displayed
+        """
+
+        self.watch_path = watch_path
+
     def get_clim(self, 
                  csv_data):
 
