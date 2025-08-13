@@ -11,7 +11,6 @@ import random
 import time
 import pandas as pd
 import sys
-from dataviztool.display_tools import display_csv, display_tiff
 
 #pv.global_theme.full_screen = True
 #this breaks everything 
@@ -86,11 +85,11 @@ class Handler(FileSystemEventHandler):
 
                 #For data in csv format, e.g. example csvs
 
-                display_csv(self.displayer, event.src_path)
+                self.displayer.display_csv(event.src_path)
 
             else:
 
                 #For reading tiff files
 
-                display_tiff(self.displayer, event.src_path)
+                self.displayer.display_tiff(event.src_path)
 

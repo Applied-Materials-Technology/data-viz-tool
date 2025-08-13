@@ -10,6 +10,6 @@ my_watcher = Watcher(displayer = my_displayer, watch_path = "path1")
 
 
 print(my_displayer.watch_path)
-my_watcher.set_watch_path("example_inputloc")
+my_watcher.set_watch_path("../inputloc")
 print(my_displayer.watch_path)
 my_watcher.run()
