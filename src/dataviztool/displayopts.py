@@ -13,7 +13,6 @@ import time
 import pandas as pd
 import json
 from dataviztool.watcher import Watcher
-from dataviztool.display_tools import auto_create_plotter
 #from logger import logger
 
 start_time = time.time()
