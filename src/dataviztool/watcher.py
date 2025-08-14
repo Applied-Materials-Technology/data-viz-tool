@@ -32,8 +32,7 @@ class Watcher:
 
 
         self.displayer = displayer
-        #self.watch_path = self.displayer.watch_path
-        self.watch_path = watch_path
+        self.watch_path = self.displayer.watch_path
         self.observer = Observer()
 
     def set_watch_path(self, watch_path: Path) -> None:

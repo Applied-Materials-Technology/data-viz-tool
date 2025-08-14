@@ -11,6 +11,7 @@ from pathlib import Path
 import time
 import pandas as pd
 from dataviztool.displayopts import DisplayerOpts
+from dataviztool.watcher import Watcher
 #from logger import logger
 
 
@@ -20,15 +21,14 @@ class Displayer():
                 p = None,
                 automake_plotter = True,
                 watch_path = None,
+                _subplot_dict = dict,
                 display_opts = DisplayerOpts()) -> None:
         
         self.p = p
         self.automake_plotter = automake_plotter
         self.display_opts = display_opts
-
-        #self.display_opts.watch_path = Path(os.path.join(Path.cwd().parent.parent,"inputloc"))
-        #self.watch_path = self.display_opts.watch_path
         self.watch_path = watch_path
+        self._subplot_dict: dict = {}
 
         if self.automake_plotter == True:
             self.auto_create_plotter()
@@ -45,7 +45,6 @@ class Displayer():
         displayer: display_options.Displayer
             The displayer to create a plotter and subplots for.
         """
-
         self.create_plotter(1,2)
         self.assign_subplot(0,0,"Experimental View", "left")
         self.assign_subplot(0,1,"Simulation View", "right")
@@ -74,7 +73,6 @@ class Displayer():
             displayer.p : pyvista.plotting.plotter.Plotter
                 The plotter associated with the Displayer object displayer
         """
-
         self.p = pv.Plotter(shape=(xsize,ysize))
         return self.p
 
@@ -101,20 +99,11 @@ class Displayer():
                 dirname : (path)
                     path to the directory that will contain the data that will be displayed by the referenced subplot
             """
-            dirlist = os.walk(self.display_opts.watch_path)
-    #        for i in dirlist:
-    #            print(i[1])
-            #will probably end up too slow - only allow 0_1 folders?
-            
+            #dirlist = os.walk(self.watch_path)
+            dirlist = os.walk(self.watch_path)
+
             newlist = [x[1] for x in dirlist]
             print(newlist)
-            """
-            if dirname not in dirlist:
-                make_dir = input("That directory could not be found, make directory? y/n").lower()
-                if make_dir == "n":
-                    sys.exit()
-                elif make_dir == "y":
-                    os.mkdir(watch.watch_path/dirname)"""
 
             if dirname is None:
                 #fix to work with the above code
@@ -123,7 +112,7 @@ class Displayer():
 
             self.p.subplot(subplotx, subploty)
             self.p.add_title(title)
-            self.display_opts._subplot_dict[dirname] = [subplotx, subploty]
+            self._subplot_dict[dirname] = [subplotx, subploty]
 
 
 
@@ -146,8 +135,8 @@ class Displayer():
         path1 = os.path.dirname(event)
         path2 = os.path.basename(path1)
 
-        self.display_opts.subplotx = self.display_opts._subplot_dict[path2][0]
-        self.display_opts.subploty = self.display_opts._subplot_dict[path2][1]
+        self.display_opts.subplotx = self._subplot_dict[path2][0]
+        self.display_opts.subploty = self._subplot_dict[path2][1]
 
     def read_csv(self,
                 event: Path):
