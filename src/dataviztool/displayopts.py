@@ -17,30 +17,12 @@ from dataviztool.watcher import Watcher
 
 start_time = time.time()
 
+@dataclass
 class DisplayerOpts():
 
     """
     Class that handles the display options for the visualiser
-    """
-    
-    __slots__ =("p",
-                "subploty",
-                "subplotx",
-                "x_coord",
-                "y_coord",
-                "z_coord",
-                "field",
-                "colourmap",
-                "colour_divs",
-                "current_file",
-                "clim_option",
-                "clim",
-                "quan_min",
-                "quan_max",
-                "zoom_level",
-                "watch_path",
-                "make_labels",
-                "_subplot_dict")
+    """      
 
     def __init__(self,
                   p = None,
@@ -53,13 +35,11 @@ class DisplayerOpts():
                   colourmap: str = 'viridis',
                   colour_divs: int = 10,
                   current_file: str = "",
-                  automake_plotter: bool = True,
                   clim_option: str = 'default',
                   clim = None,
                   quan_min = None,
                   quan_max = None,
                   zoom_level: int = 1,
-                  watch_path = None,
                   make_labels: int = 0) -> None:
         
         self.p = p
@@ -77,13 +57,7 @@ class DisplayerOpts():
         self.quan_min =  quan_min,
         self.quan_max = quan_max,
         self.zoom_level = zoom_level
-        self.watch_path = watch_path
         self.make_labels = make_labels
-        self._subplot_dict: dict = {}
-
-        self.watch_path = Path(os.path.join(Path.cwd().parent.parent,"inputloc"))
-
-        watcher = Watcher(self, watch_path=self.watch_path)
 
 
         self.set_cmap(self.colourmap, self.colour_divs)
