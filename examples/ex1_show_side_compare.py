@@ -1,12 +1,10 @@
 
 from pathlib import Path
 import os
-from dataviztool.display_tools import *
-from dataviztool.display_options import Displayer
+from dataviztool.displayer import Displayer
+from dataviztool.displayopts import DisplayerOpts
 from dataviztool.watcher import Watcher
 from copier import Copier
-
-from threading import Thread
 
 if not os.path.exists("example_inputloc"):
     os.makedirs("example_inputloc")
