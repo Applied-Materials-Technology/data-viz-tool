@@ -46,5 +46,28 @@ In terminal 2
 python copy_files.py --test
 ```
 
+###### To set up plotter manually...
+See examples/ex3_manual_plotter.py for example.
+
+Set up displayer opts (can skip if using defaults)
+```python
+displayopts = DisplayerOpts()
+#if reading csvs
+displayopts.set_csv_coords(x_coordinate, y_coordinate, z_coordinate, field)
+```
+
+Create displayer and subplots
+```python
+my_displayer = Displayer(automake_plotter=False, watch_path = "example_inputloc", display_opts=displayopts)
+my_displayer.create_plotter(1,2)
+my_displayer.assign_subplot(0,0,"Subplot heading", "Name of folder to read data")
+my_displayer.assign_subplot(0,1,"Subplot heading", "Name of folder to read data")
+```
+
+Start watcher and wait for data arrival
+```python
+my_watcher = Watcher(displayer = my_displayer, watch_path="path/to/incoming/data")
+my_watcher.run()
+```
 
 
