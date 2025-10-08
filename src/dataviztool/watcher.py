@@ -79,16 +79,46 @@ class Handler(FileSystemEventHandler):
 
             print("Watchdog received modified event - % s." % event.src_path)
 
+            """
+
 
             if 'csv' in event.src_path:
+
 
                 #For data in csv format, e.g. example csvs
 
                 self.displayer.display_csv(event.src_path)
+                
 
             else:
 
                 #For reading tiff files
 
-                self.displayer.display_tiff(event.src_path)
+                self.displayer.display_tiff(event.src_path)"""
+            
+            event_decider(self.displayer, event)
+            
+def event_decider(displayer, event):
+
+    try:
+
+        if 'csv' in event.src_path:
+
+
+            #For data in csv format, e.g. example csvs
+
+            displayer.display_csv(event.src_path)
+            
+
+        else:
+
+            #For reading tiff files
+
+            displayer.display_tiff(event.src_path)
+    
+    except:
+
+        event_decider(displayer, event)
+        # scuffed ...
+        # ... but works for now
 
