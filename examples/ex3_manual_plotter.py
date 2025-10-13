@@ -12,7 +12,7 @@ if not os.path.exists("example_inputloc"):
     os.makedirs("example_inputloc/right")
 
 displayopts = DisplayerOpts()
-#displayopts.set_csv_coords("X[mm]", "Y[mm]", "X[mm]", "Vertical Displacement V[mm]")
+displayopts.set_csv_coords("X[mm]", "Y[mm]", "X[mm]", "Vertical Displacement V[mm]")
 
 my_displayer = Displayer(automake_plotter=False, watch_path = "example_inputloc", display_opts=displayopts)
 
